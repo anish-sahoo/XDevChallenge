@@ -1,12 +1,21 @@
-import { useState, KeyboardEvent, ChangeEvent } from "react";
+import { KeyboardEvent, ChangeEvent } from "react";
+import { motion } from "framer-motion";
 
 type SearchBarProps = {
   search: (term: string) => void;
+  searchClicked: boolean;
+  setSearchClicked: (clicked: boolean) => void;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
 };
 
-const SearchBar = ({ search }: SearchBarProps) => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
+const SearchBar = ({
+  search,
+  searchClicked,
+  setSearchClicked,
+  searchTerm,
+  setSearchTerm,
+}: SearchBarProps) => {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -14,12 +23,17 @@ const SearchBar = ({ search }: SearchBarProps) => {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       search(searchTerm);
-      setSearchTerm("");
+      setSearchClicked(searchTerm.length > 0);
     }
   };
 
   return (
-    <div className="relative w-full flex justify-center text-black">
+    <motion.div
+      className="relative w-full flex justify-center text-black"
+      initial={{ y: 0 }}
+      animate={{ y: searchClicked && searchTerm.length > 0 ? "-40vh" : 0 }} // Move up when searchTerm is not empty
+      transition={{ type: "spring", duration: 0.5 }} // Adjust the transition type and duration
+    >
       <input
         type="text"
         style={{
@@ -38,7 +52,7 @@ const SearchBar = ({ search }: SearchBarProps) => {
         onChange={handleInputChange}
         onKeyDownCapture={handleKeyDown}
       />
-    </div>
+    </motion.div>
   );
 };
 
