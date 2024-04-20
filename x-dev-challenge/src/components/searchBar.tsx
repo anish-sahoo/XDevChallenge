@@ -1,69 +1,44 @@
-import React, {useState} from "react";
+import {useState, KeyboardEvent, ChangeEvent} from "react";
 
-const SearchBar = ({languages}) => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [matchedLanguages, setMatchedLanguages] = useState([]);
-    const [dropdownVisible, setDropdownVisible] = useState(false);
+type SearchBarProps = {
+  search: (term: string) => void;
+};
 
-    const handleInputChange = (e) => {
-        const term = e.target.value;
-        setSearchTerm(term);
+const SearchBar = ({search}: SearchBarProps) => {
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
-        // Filter languages based on the search term
-        const matched = languages.filter((lang) =>
-            lang.toLowerCase().includes(term.toLowerCase()),
-        );
-        setMatchedLanguages(matched);
-        setDropdownVisible(true);
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
     };
 
+    const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            search(searchTerm);
+            setSearchTerm('');
+        }
+    };
 
     return (
-        <div className="relative w-full flex justify-center">
+        <div className="relative w-full flex justify-center text-black">
             <input
                 type="text"
                 style={{
-                    width: '85%',
+                    width: '65%',
                     margin: '0 auto',
                     display: 'block',
                     padding: '12px 24px',
-                    paddingLeft: '48px', // Increase padding-left to avoid text overlapping the icon
-                    backgroundImage: 'url(/Search111.png)',
-                    backgroundPosition: '5px center', // Adjust as necessary
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: '48px 48px',
+                    paddingLeft: '48px',
                     borderRadius: '9999px',
                     border: '1px solid #d1d5db',
                     boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
                     fontSize: '18px',
                     fontFamily: 'Judson, serif',
                 }}
-                placeholder="Search for languages..."
+                placeholder="Search for Financial Keywords..."
                 value={searchTerm}
                 onChange={handleInputChange}
+                onKeyDownCapture={handleKeyDown}
             />
-            {dropdownVisible && matchedLanguages.length > 0 && (
-                <div
-                    className="absolute top-full left-0 z-10 w-full bg-white shadow-lg
-                        rounded-xl border border-gray-300 overflow-hidden"
-                    style={{
-                        fontFamily: 'Judson, serif',
-                        width: '80%', // Adjust the width as needed
-                        left: '10%', // Center the dropdown relative to the search bar
-                        right: '7.5%',
-                    }} // Apply Judson font to the entire dropdown
-
-                >
-                    {matchedLanguages.slice(0, 5).map((language, index) => (
-                        <div
-                            key={index}
-                            className="py-2 px-4 hover:bg-gray-100 cursor-pointer"
-                        >
-                            {language}
-                        </div>
-                    ))}
-                </div>
-            )}
         </div>
     );
 };
