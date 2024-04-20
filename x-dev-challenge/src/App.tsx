@@ -1,8 +1,8 @@
 function App() {
   return (
     <>
-      <div className="bg-black text-white font-mono h-screen w-screen justify-center items-center">
-        <h1>App</h1>
+      <div className="bg-black text-white font-mono flex h-screen w-screen justify-center items-center text-center">
+        <h1 className="text-lg">X Developer Challenge</h1>
       </div>
     </>
   )
