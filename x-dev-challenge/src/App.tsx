@@ -32,7 +32,7 @@ function App() {
     <>
       <div
         className={
-          "bg-zinc-900 text-white font-public-sans flex flex-col min-h-screen w-screen items-center justify-center items-center"
+          "bg-zinc-900 text-white font-public-sans flex flex-col min-h-screen w-screen items-center justify-center"
         }
       >
         <SearchBar
