@@ -117,7 +117,7 @@ woeid = 23424977
 
 def get_trending_topics(query):
     try:
-        tweets = api.search(q=query, lang='en', count=100)
+        tweets = api.search_all_tweets(q=query, lang='en', count=100)
         hashtags = []
         for tweet in tweets:
             for hashtag in tweet.entities.get('hashtags', []):
@@ -139,34 +139,64 @@ def get_trending_topics(query):
 #     print(f"{topic}: {count} tweets")
 
 
-def get_trending_from_hashtag(hashtag, count=30):
+# def get_trending_from_hashtag(hashtag, count=30):
+#     try:
+#         search_url = f"https://api.twitter.com/1.1/search/tweets.json?q=%23{hashtag}&count={count}"
+#         response = requests.get(search_url, headers={"Authorization": f"Bearer {os.getenv('ACCESS_TOKEN')}"})
+#         response.raise_for_status()  # Raise an exception for unsuccessful requests
+#         hashtags = []
+#         for tweet in response.json().get('statuses', []):
+#             for hashtag in tweet['entities']['hashtags']:
+#                 hashtags.append(hashtag['text'])
+#         hashtag_counts = {}
+#         for hashtag in hashtags:
+#             hashtag_counts[hashtag] = hashtag_counts.get(hashtag, 0) + 1
+#         sorted_hashtags = sorted(hashtag_counts.items(), key=lambda x: x[1], reverse=True)
+#         return sorted_hashtags[:count]  # Return top `count` trending hashtags
+#     except Exception as e:
+#         print("Error:", e)
+#         return []
+#
+# # Example usage: Get trending topics from a hashtag (e.g., #python)
+# hashtag = 'python'
+# trending_topics = get_trending_from_hashtag(hashtag, count=30)
+# print(f"Trending topics from #{hashtag}:")
+# for topic, count in trending_topics:
+#     print(f"{topic}: {count} occurrences")
+#
+#
+
+def get_top_tweets_with_hashtags(hashtag, count=30):
     try:
-        # Construct the Twitter search URL
-        search_url = f"https://api.twitter.com/1.1/search/tweets.json?q=%23{hashtag}&count={count}"
-        # Make the request to the Twitter API
-        response = requests.get(search_url, headers={"Authorization": f"Bearer {os.getenv('ACCESS_TOKEN')}"})
-        response.raise_for_status()  # Raise an exception for unsuccessful requests
-        # Extract hashtags from the response
-        hashtags = []
-        for tweet in response.json().get('statuses', []):
-            for hashtag in tweet['entities']['hashtags']:
-                hashtags.append(hashtag['text'])
-        # Count occurrences of each hashtag
-        hashtag_counts = {}
-        for hashtag in hashtags:
-            hashtag_counts[hashtag] = hashtag_counts.get(hashtag, 0) + 1
-        # Sort hashtags by frequency
-        sorted_hashtags = sorted(hashtag_counts.items(), key=lambda x: x[1], reverse=True)
-        return sorted_hashtags[:count]  # Return top `count` trending hashtags
-    except Exception as e:
+        # Define a filter rule to listen for tweets containing the hashtag and filtered by 'like'
+        rules = [{"value": f"#{hashtag} has:likes", "tag": "hashtag_likes"}]
+
+        # Create or update the filter rules
+        response = api.create_stream_filter(rules=rules)
+        filter_id = response.data.get('id')
+
+        # Collect tweets from the filtered stream
+        for tweet in api.filtered_stream(filter_id):
+            # Extract relevant information from the tweet
+            tweet_info = {
+                'text': tweet.text,
+                'likes': tweet.favorite_count
+            }
+            top_tweets.append(tweet_info)
+            # Stop collecting tweets once we have enough
+            if len(top_tweets) >= count:
+                break
+
+        # Delete the filter rules
+        api.delete_stream_filter(filter_id)
+
+        return top_tweets
+    except tweepy.errors.TweepyException as e:
         print("Error:", e)
         return []
 
-# Example usage: Get trending topics from a hashtag (e.g., #python)
 hashtag = 'python'
-trending_topics = get_trending_from_hashtag(hashtag, count=30)
-print(f"Trending topics from #{hashtag}:")
-for topic, count in trending_topics:
-    print(f"{topic}: {count} occurrences")
-
-
+top_tweets = get_top_tweets_with_hashtags(hashtag, count=30)
+print(f"Top tweets with #{hashtag} (sorted by likes count):")
+for index, tweet_info in enumerate(top_tweets, start=1):
+    print(f"{index}. Likes: {tweet_info['likes']}, Tweet: {tweet_info['text']}")
