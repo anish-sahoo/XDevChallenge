@@ -1,19 +1,27 @@
 import SearchBar from "./components/searchBar.tsx";
-import Card from "./components/card.tsx";
+import { useState } from "react";
 
 function App() {
-    return (
-        <>
-            <div
-                className={
-                    "bg-zinc-900 text-white font-public-sans flex flex-col min-h-screen w-screen items-center justify-center"
-                }
-            >
-                <SearchBar search={(term: string) => console.log(term)}/>
-                <Card/>
-            </div>
-        </>
-    );
+  const [searchClicked, setSearchClicked] = useState<boolean>(false);
+
+  return (
+    <>
+      <div
+        className={
+          "bg-zinc-900 text-white font-public-sans flex flex-col min-h-screen w-screen items-center justify-center items-center"
+        }
+      >
+        <SearchBar
+          search={(term: string) => {
+            console.log(term);
+          }}
+          setSearchClicked={(clicked: boolean) => setSearchClicked(clicked)}
+          searchClicked={searchClicked}
+        />
+        {searchClicked && <div className="text-2xl">Search clicked</div>}
+      </div>
+    </>
+  );
 }
 
 export default App;
