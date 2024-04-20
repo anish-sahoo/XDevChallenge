@@ -49,7 +49,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True)
 
 
 def Gather_Tweets():
-    all =[]
+    all = []
     friends = api.get_friend_ids()
     for friend in friends:
         new_tweets = api.user_timeline(api.get_user(friend).screen_name, count=20, page = 5, tweet_mode='extended')
