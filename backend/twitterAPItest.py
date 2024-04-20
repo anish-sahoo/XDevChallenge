@@ -7,15 +7,17 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # auth = tweepy.OAuthHandler(os.getenv('API_KEY'), os.getenv('API_SECRET'))
-auth = tweepy.OAuthHandler(access_token=os.getenv('ACCESS_TOKEN'), access_token_secret=os.getenv('ACCESS_TOKEN_SECRET'))
-                           # consumer_secret=os.getenv('CONSUMER_SECRET'), consumer_key=os.getenv('CONSUMER_KEY'))
-# auth.set_access_token(os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_SECRET'))
-print(os.getenv('ACCESS_TOKEN'))
-print(os.getenv('ACCESS_SECRET'))
-print(os.getenv('API_KEY'))
-print(os.getenv('API_SECRET'))
+# auth = tweepy.OAuthHandler(access_token=os.getenv('ACCESS_TOKEN'), access_token_secret=os.getenv('ACCESS_TOKEN_SECRET'),
+#                            consumer_secret=os.getenv('CONSUMER_SECRET'), consumer_key=os.getenv('CONSUMER_KEY'))
+# # auth.set_access_token(os.getenv('ACCESS_TOKEN'), os.getenv('ACCESS_SECRET'))
+# print(os.getenv('ACCESS_TOKEN'))
+# print(os.getenv('ACCESS_SECRET'))
+# print(os.getenv('API_KEY'))
+# print(os.getenv('API_SECRET'))
 
-api = tweepy.API(auth)
+# api = tweepy.API(auth)
+
+api = tweepy.Client(bearer_token=os.getenv('BEARER_TOKEN'))
 
 # # def Gather_Tweets():
 # #     all_tweets = []
@@ -104,7 +106,7 @@ api = tweepy.API(auth)
 woeid = 23424977
 
 # fetching the trends
-trends = api.get_place_trends(id=woeid)
+# trends = api.get_place_trends(id=woeid)
 
 # printing the information
 #print("The top trends for the location are :")
