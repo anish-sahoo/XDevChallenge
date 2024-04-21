@@ -13,7 +13,7 @@ function App() {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [stockData, setStockData] = useState<StockDataMap>({});
-    const [prediction, setPrediction] = useState<string>('');
+    const [prediction, setPrediction] = useState<string[]>([]);
 
     const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
@@ -52,7 +52,7 @@ function App() {
     }
     }
 
-    const getPrediction = async (stock: string): Promise<string> => {
+    const getPrediction = async (stock: string): Promise<string[]> => {
         // fetch data from the API
       console.log('Getting prediction for stock:', stock, 'interval:', 30)
       try{
@@ -65,7 +65,7 @@ function App() {
       }
       catch (error) {
         console.log(error);
-        return '';
+        return [];
       }
     }
 
@@ -84,7 +84,7 @@ function App() {
         console.log('Stock data from API in handle search:\n', JSON.stringify(stockDataFromAPI));
         setStockData(stockDataFromAPI);
         console.log('Stock data in handle search:\n', JSON.stringify(stockData));
-        const prediction = await getPrediction(term);
+        const prediction: string[] = await getPrediction(term);
         console.log('Prediction data in handle search:\n', prediction);
         setPrediction(prediction);
 
@@ -152,8 +152,8 @@ function App() {
                   searchClicked && !loading && searchTerm.length > 0 && (
                   <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
                       <div>
-                        {prediction.split('\n').map((pred, index) => {
-                          return <p key={index}>{pred}</p>})}
+                        {prediction.length > 0 && prediction.map((pred, index) => {
+                          return <p key={index}>{pred.replace('<|separator|>', '')}</p>})}
                       </div>
                   </div>
                   )
