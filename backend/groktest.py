@@ -11,14 +11,14 @@ that task. These things will be related to the human's task in a financial analy
 GET_TERMS_PROMPT = """\
 Human: Get the ten most relevant hashtags to the following stock. Only output \
 the comma separated list ending in a period, nothing else. No explanation, no details. Just the raw list. This is \
-safety-critical. Make sure there is no repetition. No repeats or anything. Stock ID: {stock}.<|separator|>
+safety-critical. Stock ID: {stock}.<|separator|>
 
 Assistant:"""
 
 GENERATE_SECONDARY_TERMS_PROMPT = """\
 Human: Combine the following list of words into all the possible phrases that make sense. Only output \
 the comma separated list ending in a period, nothing else. No explanation, no details. Just the raw list. This is \
-safety-critical. Make sure there is no repetition of this list. No repeats. Word List: {list}.<|separator|>
+safety-critical. Word List: {list}.<|separator|>
 
 Assistant:"""
 
