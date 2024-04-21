@@ -65,7 +65,7 @@ async def predict():
             print('Prediction:', prediction)
             return prediction
         except Exception as e:
-            print(e)
+            print('Exception',e)
             return jsonify({'error': f'Error fetching prediction {e}'}), 500
 
 if __name__ == '__main__':
