@@ -8,7 +8,7 @@ A Human is asking the Assistant for help with specific tasks. The broder context
 financial analysis. The assistant 
 """
 GET_TERMS_PROMPT = """\
-Human: Get the ten most relevant terms to the following stock. Only output \
+Human: Get the ten most relevant hashtags to the following stock. Only output \
 the comma separated list ending in a period, nothing else. No explanation, no details. Just the raw list. This is \
 safety-critical. Stock ID: {stock}.<|separator|>
 
@@ -37,6 +37,7 @@ async def get_terms(stock_name):
     await prompt(GET_TERMS_PROMPT.format(stock=stock_name))
     output = await sample(max_len=200, stop_strings=[".", "<|separator|>"], temperature=0.5)
     return parse_output(output.as_string())
+
 @prompt_fn
 async def gen_sentiments(tweet_list):
     #TODO
@@ -45,7 +46,7 @@ async def gen_sentiments(tweet_list):
 def parse_output(output):
     parsed = output.split(",")[:-1]
     for i in range(len(parsed)):
-        # parsed[i] = parsed[i][2:]
+        parsed[i] = parsed[i][2:]
         if "<|separator|>" in parsed[i]:
             parsed[i] = parsed[i].replace("<|separator|>", "")
     return parsed
