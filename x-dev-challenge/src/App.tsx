@@ -62,15 +62,16 @@ function App() {
         />
         {loading && searchClicked && searchTerm.length > 0 && (
         <div
-          className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-opacity-50"
+          className="fixed w-screen h-screen flex items-center justify-center bg-opacity-50"
           style={{ zIndex: 9999 }}
         >
           <HashLoader color="#ffffff" loading={true} size={50} />
         </div>
       )}
         {
-          stockData && (
-            <StockChart stockData={stockData}/>)
+          stockData && searchClicked && !loading && (
+            <StockChart stockData={stockData}/>
+          )
         }
       </div>
     </>
