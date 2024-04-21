@@ -2,6 +2,7 @@ import SearchBar from "./components/searchBar.tsx";
 import { useState } from "react";
 import { HashLoader } from "react-spinners";
 import axios, {AxiosResponse, AxiosError} from "axios";
+import ParticleBackground from "./components/ParticleBackground.tsx";
 
 function App() {
   const [searchClicked, setSearchClicked] = useState<boolean>(false);
@@ -30,11 +31,13 @@ function App() {
 
   return (
     <>
+      <ParticleBackground/>
       <div
         className={
-          "bg-zinc-900 text-white font-public-sans flex flex-col min-h-screen w-screen items-center justify-center"
+          "text-white font-public-sans flex flex-col min-h-screen w-screen items-center justify-center"
         }
       >
+
         <SearchBar
           search={(term: string) => handleSearch(term)}
           searchTerm={searchTerm}
