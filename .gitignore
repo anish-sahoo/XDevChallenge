@@ -2,3 +2,6 @@ x-dev-challenge/node_modules/
 node_modules/
 .idea/
 .env
+backend/.env
+rust-backend/target
+rust-backend/.env
