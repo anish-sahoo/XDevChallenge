@@ -4,6 +4,7 @@ import xai_sdk
 from xai_sdk.ide import *
 import flask
 import json
+import re
 
 PREAMBLE = """\
 A Human is asking the Assistant for help with specific tasks. The broader context of the task is \
@@ -57,7 +58,7 @@ Assistant:"""
 async def get_terms(stock_name):
     await prompt(GET_TERMS_PROMPT.format(stock=stock_name))
     output = await sample(max_len=200, stop_strings=[".", "<|separator|>"], temperature=0.5)
-    return parse_output(output.as_string())
+    return parse_term_output(output.as_string())
 
 @prompt_fn
 async def gen_predictions(tweet_list, stock_list, stock_name):
@@ -65,8 +66,17 @@ async def gen_predictions(tweet_list, stock_list, stock_name):
     stock_list = parse_stock_input(stock_list)
     await prompt(GENERATE_PREDICTIONS_PROMPT.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
     output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
-    print(output.as_string())
-    return output.as_string()
+    str_out = output.as_string()
+    str_out = str_out[2:-2]
+    str_out = str_out.split("], [")
+    for t in str_out:
+        t = t.split("), (")
+        temp = t[-1].split('), ')
+        t.pop(-1)
+        t.extend(temp)
+        for l in t:
+            l = l.split(", ")
+    return parse_stock_output(str_out)
 
 def parse_tweet_input(input):
     parsed = []
@@ -87,7 +97,7 @@ def parse_stock_input(input):
         parsed.append(entry)
     return parsed
 
-def parse_output(output):
+def parse_term_output(output):
     parsed = output.split(",")[:-1]
     for i in range(len(parsed)):
         if "#" in parsed[i]:
@@ -96,3 +106,21 @@ def parse_output(output):
             parsed[i] = parsed[i].replace("<|separator|>", "")
         parsed[i].strip()
     return parsed
+
+def parse_stock_output(str_out):
+    str_out = str_out[2:-2]
+    str_out = str_out.split("], [")
+    new_dict = {}
+    for t in str_out:
+        temp_dict= {}
+        t = t[1:]
+        t = t.split("), (")
+        temp = t[-1].split('), ')
+        t.pop(-1)
+        t.extend(temp)
+        for l in t[:-1]:
+            l = l.split(", ")
+
+            temp_dict[l[0]] = l[1]
+        new_dict[t[-1]] = temp_dict
+    return json.dumps(new_dict)
