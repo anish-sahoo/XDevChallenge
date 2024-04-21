@@ -38,13 +38,13 @@ Human: There will be 2 provided lists and a Stock Name. A Tweet List and Stock P
 as a list of tuples. Each tuple has string for the tweet and a number of likes. These tweets contain information \
 about the stock and relevant fields and topics to the stock. For a pizza company stock it would look like: \
 [('I love pizza', 5), ('Pizza is the best', 20), ('Cheese has been cheaper lately', 6), ('Italian restaurants have been popular lately', 19)]. \
-The Stock Price List will be formatted as a list of list of tuples. Each internal list has 5 tuples \
-which contain the open, high, low, close, and date of the stock price. The 4 of the tuples have a \
+The Stock Price List will be formatted as a list of list of tuples. Each internal list has 4 tuples and a string \
+which contain the open, high, low, close, and date of the stock price. The tuples have a \
 string for the label and a string for the dollar value of the stock the label. For Example: ('1. open', '5.67') \
-is the open price of the stock. The last tuple has a string for the date of the stock data. For Example:\
-('2024-03-19'). The whole Stock Price List will have a format like the example below: \
-[[('1. open', '3.34'), ('2. high', '4.12'), ('3. low', '2.94'), ('4. close', '3.72'), ('2024-04-19')], \
-[('1. open', '3.72'), ('2. high', '4.22'), ('3. low', '3.34'), ('4. close', '3.94'), ('2024-04-20')]] \
+is the open price of the stock. The string for the date of the stock data is in YYYY-MM-DD format. For Example:\
+'2024-03-19'. The whole Stock Price List will have a format like the example below: \
+[[('1. open', '3.34'), ('2. high', '4.12'), ('3. low', '2.94'), ('4. close', '3.72'), '2024-04-19'], \
+[('1. open', '3.72'), ('2. high', '4.22'), ('3. low', '3.34'), ('4. close', '3.94'), '2024-04-20']] \
 Use the information about the public and financial opinion data from the tweets in combination with the stock data \
 to predict the stock prices of the provided stock for the next 3 days. Output the data in the exact same format as the Stock Price List. \
 Only output the properly formatted predictions nothing else. No explanation, no details. Just the raw list. This is safety-critical. \
@@ -62,19 +62,30 @@ async def get_terms(stock_name):
 @prompt_fn
 async def gen_predictions(tweet_list, stock_list, stock_name):
     tweet_list = parse_tweet_input(tweet_list)
-
-    await prompt(GENERATE_PREDICTIONS_PROMPT.format(tweets=tweet_list, ))
-    return 0
+    stock_list = parse_stock_input(stock_list)
+    await prompt(GENERATE_PREDICTIONS_PROMPT.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
+    output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
+    print(output.as_string())
+    return output.as_string()
 
 def parse_tweet_input(input):
     parsed = []
     for tweet in input:
         parsed.append((tweet.text, tweet["public_metrics"]["like_count"]))
     return parsed
+
 def parse_stock_input(input):
+    parsed = []
     dict_form = json.loads(input)
-    for key in dict_form.keys():
-        dict_form[key]
+    for key in dict_form:
+        entry = []
+        entry.append(("1. open", dict_form[key]["1. open"]))
+        entry.append(("2. high", dict_form[key]["2. high"]))
+        entry.append(("3. low", dict_form[key]["3. low"]))
+        entry.append(("4. close", dict_form[key]["4. close"]))
+        entry.append((key))
+        parsed.append(entry)
+    return parsed
 
 def parse_output(output):
     parsed = output.split(",")[:-1]
