@@ -64,7 +64,7 @@ async def stockdata():
 #             return jsonify({'error': f'Error fetching prediction {e}'}), 500
 
 @app.route('/api/v1/predict', methods=['POST'])
-async def stockdata():
+async def predict():
     if request.method == 'POST':
         data = await request.get_json()
         print('JSON input', data)
