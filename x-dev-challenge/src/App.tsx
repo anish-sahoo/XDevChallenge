@@ -8,6 +8,7 @@ import StockDataMap from "./StockDataMap.ts";
 import { motion } from 'framer-motion';
 import obj from "./StockApiReturn.ts";
 
+
 function App() {
     const [searchClicked, setSearchClicked] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -15,15 +16,25 @@ function App() {
     const [stockData, setStockData] = useState<StockDataMap>({});
     const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
-        await axios.post("https://api.asahoo.dev/api/v1/search", {
-            search_term: term,
-        }).then((response: AxiosResponse) => {
-            console.log(response.data);
-            return response.data.search_term || '';
-        }).catch((error: AxiosError) => {
+        try {
+          const response: AxiosResponse = await axios.post("https://api.asahoo.dev/api/v1/search", {
+              search_term: term,
+          });
+          console.log(response.data);
+            return JSON.stringify(response.data) || '';
+          }
+          catch (error) {
             console.log(error);
-        });
-        return '';
+            return '';
+        }
+        // await axios.post("https://api.asahoo.dev/api/v1/search", {
+        //     search_term: term,
+        // }).then((response: AxiosResponse) => {
+        //
+        // }).catch((error: AxiosError) => {
+        //     console.log(error);
+        // });
+        // return '';
     }
     const getStockData = async (stock: string): Promise<StockDataMap> => {
         // fetch data from the API
@@ -38,6 +49,22 @@ function App() {
         console.log(error);
         return {}; // Return empty object in case of error
     }
+    }
+
+    const getPrediction = async (stock: string): Promise<StockDataMap> => {
+        // fetch data from the API
+      console.log('Getting prediction for stock:', stock, 'interval:', 30)
+        await axios.post("https://api.asahoo.dev/api/v1/predict", {
+            stock_name: stock,
+            interval: 30,
+        }).then((response: AxiosResponse) => {
+            console.log('Response received from getPrediction',response.data);
+            return response.data || {};
+        }).catch((error: AxiosError) => {
+            console.log(error);
+        });
+      console.log('No prediction data found')
+        return {};
     }
 
     const handleSearch = async (term: string) => {
@@ -55,6 +82,8 @@ function App() {
         console.log('Stock data from API in handle search:\n', JSON.stringify(stockDataFromAPI));
         setStockData(stockDataFromAPI);
         console.log('Stock data in handle search:\n', JSON.stringify(stockData));
+        const prediction = await getPrediction(term);
+        console.log('Prediction data in handle search:\n', JSON.stringify(prediction));
 
       // setLoading(true);
       // setTimeout(() => {
