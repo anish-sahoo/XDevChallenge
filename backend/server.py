@@ -35,10 +35,14 @@ async def stockdata():
     if request.method == 'POST':
         data = await request.get_json()
         print('JSON input', data)
-        stock_data = getStockData(data.get('stock_name'), data.get('interval'))
-        response = jsonify(stock_data)
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
+        try:
+            stock_data = getStockData(data.get('stock_name'), data.get('interval'))
+            response = jsonify(stock_data)
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
+        except Exception as e:
+            print(e)
+            return jsonify({'error': f'Error fetching stock data {e}'}), 500
 
 
 if __name__ == '__main__':

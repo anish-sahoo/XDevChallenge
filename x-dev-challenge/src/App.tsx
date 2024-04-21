@@ -12,7 +12,7 @@ function App() {
     const [searchClicked, setSearchClicked] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [stockData, setStockData] = useState<StockDataMap>(obj);
+    const [stockData, setStockData] = useState<StockDataMap>({});
     const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
         await axios.post("https://api.asahoo.dev/api/v1/search", {
@@ -43,7 +43,13 @@ function App() {
     const handleSearch = async (term: string) => {
         setLoading(true);
         console.log(term);
-        await getSearchResults(term);
+        const searchResult = await getSearchResults(term);
+        if(searchResult === '') {
+          console.log('No search results found');
+            setLoading(false);
+            setStockData({});
+            return;
+        }
         const stockDataFromAPI = await getStockData(term);
         console.log('Stock data from API in handle search:\n', JSON.stringify(stockDataFromAPI));
         setStockData(stockDataFromAPI);
@@ -99,9 +105,9 @@ function App() {
               </div>
             )}
             {
-                stockData != ({}) && stockData != obj && searchClicked && !loading && searchTerm.length > 0 && (
+                searchClicked && !loading && searchTerm.length > 0 && (
                 <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
-                    <StockChart stockData={stockData}/>
+                  {stockData != ({}) ? <StockChart stockData={stockData}/> : <p>No data found</p>}
                 </div>
                 )
             }
