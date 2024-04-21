@@ -11,6 +11,8 @@ def getStockData(symbol, interval):
     r = requests.get(url)
     json_data = r.json()
 
+    print('JSON in getStockData:', json_data)
+
     last_refreshed_date_str = json_data['Meta Data']['3. Last Refreshed']
     last_refreshed_date = datetime.strptime(last_refreshed_date_str, '%Y-%m-%d')
 
