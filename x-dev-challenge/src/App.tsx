@@ -78,9 +78,9 @@ function App() {
               initial={{opacity: 0}}
               animate={{opacity: searchClicked ? 1 : 0}}
               transition={{duration: 0.5}}
-              className={`fixed flex flex-col items-left top-0 left-0 text-5xl ${!searchClicked ? 'opacity-0' : 'text-gray-300 font-mono p-4'}`}
+              className={`fixed flex flex-col items-left top-0 left-0 md:text-5xl text-xl ${!searchClicked ? 'opacity-0' : 'text-gray-300 font-mono p-4'}`}
             >
-              <p className={"text-6xl font-bold font-public-sans text-white"}>X</p>
+              <p className={"md:text-6xl text-2xl font-bold font-public-sans text-white"}>X</p>
               <p>F</p>
               <p>I</p>
               <p>N</p>
