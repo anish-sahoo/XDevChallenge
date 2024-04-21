@@ -58,7 +58,7 @@ function App() {
             stock_name: stock,
             interval: 30,
         }).then((response: AxiosResponse) => {
-            console.log('Response received from getPrediction',response.data);
+            console.log('Response received from getPrediction',JSON.stringify(response.data));
             return response.data || {};
         }).catch((error: AxiosError) => {
             console.log(error);
@@ -135,20 +135,23 @@ function App() {
               </div>
             )}
             <div className={"flex flex-col"}>
-            <div className={"w-full h-full flex flex-row flex wrap p-24 gap-8"}>
-            {
-                searchClicked && !loading && searchTerm.length > 0 && (
-                <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
-                  {stockData == ({})? <p>No Data</p> : <StockChart stockData={stockData}/>}
+              <div className={"w-full h-full flex flex-row flex wrap p-24 gap-8"}>
+                {
+                  searchClicked && !loading && searchTerm.length > 0 && (
+                    <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
+                      {stockData == ({}) ? <p>No Data</p> : <StockChart stockData={stockData}/>}
+                    </div>
+                  )
+                }
+                <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
+                  <h1>Future Stock Price</h1>
                 </div>
-                )
-            }
-            <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
-              <h1>Future Stock Price</h1>
-            </div>
-            </div>
-              <div>
-                <h1>Stock Prediction</h1>
+                <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
+                  <h1>Future Stock Price</h1>
+                </div>
+                <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
+                  <h1>Future Stock Price</h1>
+                </div>
               </div>
             </div>
           </div>
