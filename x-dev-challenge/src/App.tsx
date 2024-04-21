@@ -15,7 +15,7 @@ function App() {
     const [stockData, setStockData] = useState<StockDataMap>(obj);
     const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
-        await axios.post("http://localhost:4998/api/v1/search", {
+        await axios.post("https://api.asahoo.dev/api/v1/search", {
             search_term: term,
         }).then((response: AxiosResponse) => {
             console.log(response.data);
@@ -28,7 +28,7 @@ function App() {
     const getStockData = async (stock: string): Promise<StockDataMap> => {
         // fetch data from the API
       try {
-        const response: AxiosResponse = await axios.post("http://localhost:4998/api/v1/stock", {
+        const response: AxiosResponse = await axios.post("https://api.asahoo.dev/api/v1/stock", {
             stock_name: stock,
             interval: 30,
         });
