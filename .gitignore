@@ -3,5 +3,6 @@ node_modules/
 .idea/
 .env
 backend/.env
+backend/venv
 rust-backend/target
 rust-backend/.env
