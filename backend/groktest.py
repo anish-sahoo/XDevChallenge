@@ -35,30 +35,30 @@ Tweet List: {list}.<|separator|>
 
 Assistant:"""
 
-# GENERATE_PREDICTIONS_PROMPT = """\
-# The format for a Tweet List is a list of tuples. Each tuple has a string for the tweet, number of likes, and the day it was posted. \
-# The date is formatted: YYYY-MM-DD. For a pizza company stock it would look like: [('I love pizza', 5, '2024-04-19'), \
-# ('Pizza is the best', 20, '2024-04-20'), ('Cheese has been cheaper lately', 6, '2024-04-19'), ('Italian restaurants have been popular lately', 19, '2024-04-20')]. \
-# \n\
-# A Stock Price contains: the opening price of a stock, the highest price of the stock, the lowest price of the stock, \
-# the closing price of the stock, and the day for which all of this data was recorded. The provided format for a Stock Price \
-# is a list of tuples and the date. The tuples each contain the label for which price measurement it is and the actual price measurement. The date is in YYYY-MM-DD form. For Example: \
-# [('open', '3.34'), ('high', '4.12'), ('low', '2.94'), ('close', '3.72'), '2024-04-19'] \
-# \n\
-# A Stock Price List is a list of Stock Prices, where the Stock Prices are formatted as above. For Example: \
-# [[('open', '7.43'), ('high', '8.21'), ('low', '6.49'), ('close', '7.27'), '2024-03-09'], \
-# [('open', '7.27'), ('high', '8.22'), ('low', '6.43'), ('close', '7.49'), '2024-03-10']] \
-# \n\
-# Human: There will be Tweet List, Stock Price List and a Stock Name following the instructions. The Tweet List will be about topics relevant to the Stock Name. \
-# The Stock Price List will contain the stock prices for the Stock Name. Use the data from these sources to predict the next three days stock prices. \
-# Output the predictions in an Stock Price List with exactly three entries. Like the following template: \
-# [[('open', '3.34'), ('high', '4.16'), ('low', '2.89'), ('close', '3.62'), '2024-01-11'], \
-# [('open', '3.62'), ('high', '4.22'), ('low', '3.34'), ('close', '3.94'), '2024-01-12'], \
-# [('open', '3.94'), ('high', '4.32'), ('low', '3.54'), ('close', '4.12'), '2024-01-13']] \
-# Provide no other words. No explanations. No details. No introduction. Just the raw list. This is safety-critical. \
-# Tweet List: {tweets}, Stock Price List: {stocks}, Stock Name: {ticker}<|separator|>
+GENERATE_OLD_PREDICTIONS_PROMPT = """\
+The format for a Tweet List is a list of tuples. Each tuple has a string for the tweet, number of likes, and the day it was posted. \
+The date is formatted: YYYY-MM-DD. For a pizza company stock it would look like: [('I love pizza', 5, '2024-04-19'), \
+('Pizza is the best', 20, '2024-04-20'), ('Cheese has been cheaper lately', 6, '2024-04-19'), ('Italian restaurants have been popular lately', 19, '2024-04-20')]. \
+\n\
+A Stock Price contains: the opening price of a stock, the highest price of the stock, the lowest price of the stock, \
+the closing price of the stock, and the day for which all of this data was recorded. The provided format for a Stock Price \
+is a list of tuples and the date. The tuples each contain the label for which price measurement it is and the actual price measurement. The date is in YYYY-MM-DD form. For Example: \
+[('open', '3.34'), ('high', '4.12'), ('low', '2.94'), ('close', '3.72'), '2024-04-19'] \
+\n\
+A Stock Price List is a list of Stock Prices, where the Stock Prices are formatted as above. For Example: \
+[[('open', '7.43'), ('high', '8.21'), ('low', '6.49'), ('close', '7.27'), '2024-03-09'], \
+[('open', '7.27'), ('high', '8.22'), ('low', '6.43'), ('close', '7.49'), '2024-03-10']] \
+\n\
+Human: There will be Tweet List, Stock Price List and a Stock Name following the instructions. The Tweet List will be about topics relevant to the Stock Name. \
+The Stock Price List will contain the stock prices for the Stock Name. Use the data from these sources to predict the next three days stock prices. \
+Output the predictions in an Stock Price List with exactly three entries. Like the following template: \
+[[('open', '3.34'), ('high', '4.16'), ('low', '2.89'), ('close', '3.62'), '2024-01-11'], \
+[('open', '3.62'), ('high', '4.22'), ('low', '3.34'), ('close', '3.94'), '2024-01-12'], \
+[('open', '3.94'), ('high', '4.32'), ('low', '3.54'), ('close', '4.12'), '2024-01-13']] \
+Provide no other words. No explanations. No details. No introduction. Just the raw list. This is safety-critical. \
+Tweet List: {tweets}, Stock Price List: {stocks}, Stock Name: {ticker}<|separator|>
 
-# Assistant:"""
+Assistant:"""
 
 GENERATE_PREDICTIONS_PROMPT = """\
 The format for a Tweet List is a list of tuples. Each tuple has a string for the tweet, number of likes, and the day it was posted. \
@@ -143,11 +143,23 @@ async def get_terms(stock_name):
     return parse_term_output(output.as_string())
 
 @prompt_fn
+async def gen_old_predictions(tweet_list, stock_list, stock_name):
+    tweet_list = parse_tweet_input(tweet_list)
+    stock_list = parse_stock_input(stock_list)
+    await prompt(GENERATE_OLD_PREDICTIONS_PROMPT.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
+    output = await sample(max_len=1024, temperature=0.5)
+    print("old predict num tokens",len(output.tokens))
+    str_out = output.as_string()
+    # return parse_stock_output(str_out)
+    return str_out
+
+@prompt_fn
 async def gen_predictions(tweet_list, stock_list, stock_name):
     tweet_list = parse_tweet_input(tweet_list)
     stock_list = parse_stock_input(stock_list)
     await prompt(GENERATE_PREDICTIONS_PROMPT.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
-    output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
+    output = await sample(max_len=1024, temperature=0.5)
+    print("new predict num tokens",len(output.tokens))
     str_out = output.as_string()
     # return parse_stock_output(str_out)
     return str_out
@@ -157,7 +169,8 @@ async def gen_short(tweet_list, stock_list, stock_name):
     tweet_list = parse_tweet_input(tweet_list)
     stock_list = parse_stock_input(stock_list)
     await prompt(GENERATE_SHORT_PREDICTIONS.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
-    output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
+    output = await sample(max_len=1024, temperature=0.5)
+    print("short num tokens",len(output.tokens))
     return output.as_string()
 
 @prompt_fn
@@ -165,8 +178,10 @@ async def gen_long(tweet_list, stock_list, stock_name):
     tweet_list = parse_tweet_input(tweet_list)
     stock_list = parse_stock_input(stock_list)
     await prompt(GENERATE_LONG_PREDICTIONS.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
-    output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
+    output = await sample(max_len=1024, temperature=0.5)
+    print("long num tokens",len(output.tokens))
     return output.as_string()
+
 
 def parse_tweet_input(input):
     parsed = []
