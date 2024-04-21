@@ -4,8 +4,9 @@ import xai_sdk
 from xai_sdk.ide import *
 import flask
 PREAMBLE = """\
-A Human is asking the Assistant for help with specific tasks. The broder context of the taks is \
-financial analysis. The assistant 
+A Human is asking the Assistant for help with specific tasks. The broader context of the task is \
+financial analysis. The assistant will take the human's task and find things in the API relating to \
+that task. These things will be related to the human's task in a financial analysis way.
 """
 GET_TERMS_PROMPT = """\
 Human: Get the ten most relevant hashtags to the following stock. Only output \

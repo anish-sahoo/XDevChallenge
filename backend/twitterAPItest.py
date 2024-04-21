@@ -166,37 +166,37 @@ def get_trending_topics(query):
 #
 #
 
-def get_top_tweets_with_hashtags(hashtag, count=30):
-    try:
-        # Define a filter rule to listen for tweets containing the hashtag and filtered by 'like'
-        rules = [{"value": f"#{hashtag} has:likes", "tag": "hashtag_likes"}]
-
-        # Create or update the filter rules
-        response = api.create_stream_filter(rules=rules)
-        filter_id = response.data.get('id')
-
-        # Collect tweets from the filtered stream
-        for tweet in api.filtered_stream(filter_id):
-            # Extract relevant information from the tweet
-            tweet_info = {
-                'text': tweet.text,
-                'likes': tweet.favorite_count
-            }
-            top_tweets.append(tweet_info)
-            # Stop collecting tweets once we have enough
-            if len(top_tweets) >= count:
-                break
-
-        # Delete the filter rules
-        api.delete_stream_filter(filter_id)
-
-        return top_tweets
-    except tweepy.errors.TweepyException as e:
-        print("Error:", e)
-        return []
-
-hashtag = 'python'
-top_tweets = get_top_tweets_with_hashtags(hashtag, count=30)
-print(f"Top tweets with #{hashtag} (sorted by likes count):")
-for index, tweet_info in enumerate(top_tweets, start=1):
-    print(f"{index}. Likes: {tweet_info['likes']}, Tweet: {tweet_info['text']}")
+# def get_top_tweets_with_hashtags(hashtag, count=30):
+#     try:
+#         # Define a filter rule to listen for tweets containing the hashtag and filtered by 'like'
+#         rules = [{"value": f"#{hashtag} has:likes", "tag": "hashtag_likes"}]
+#
+#         # Create or update the filter rules
+#         response = api.create_stream_filter(rules=rules)
+#         filter_id = response.data.get('id')
+#
+#         # Collect tweets from the filtered stream
+#         for tweet in api.filtered_stream(filter_id):
+#             # Extract relevant information from the tweet
+#             tweet_info = {
+#                 'text': tweet.text,
+#                 'likes': tweet.favorite_count
+#             }
+#             top_tweets.append(tweet_info)
+#             # Stop collecting tweets once we have enough
+#             if len(top_tweets) >= count:
+#                 break
+#
+#         # Delete the filter rules
+#         api.delete_stream_filter(filter_id)
+#
+#         return top_tweets
+#     except tweepy.errors.TweepyException as e:
+#         print("Error:", e)
+#         return []
+#
+# hashtag = 'python'
+# top_tweets = get_top_tweets_with_hashtags(hashtag, count=30)
+# print(f"Top tweets with #{hashtag} (sorted by likes count):")
+# for index, tweet_info in enumerate(top_tweets, start=1):
+#     print(f"{index}. Likes: {tweet_info['likes']}, Tweet: {tweet_info['text']}")

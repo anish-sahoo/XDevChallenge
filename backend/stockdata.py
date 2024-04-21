@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timedelta
 
 import requests
@@ -23,4 +22,3 @@ def getStockData(symbol, interval):
             last_30_days_data[date_str] = data
 
     return last_30_days_data
-
