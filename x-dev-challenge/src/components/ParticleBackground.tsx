@@ -25,16 +25,16 @@ const ParticleBackground = React.memo(() => {
                     value: "#0d111c",
                 },
             },
-            fpsLimit: 120,
+            fpsLimit: 240,
             interactivity: {
                 events: {
                     onClick: {
-                        enable: true,
+                        enable: false,
                         mode: "push",
                     },
                     onHover: {
-                        enable: true,
-                        mode: "repulse",
+                        enable: false,
+                        mode: "repulse"
                     },
                 },
                 modes: {
@@ -49,11 +49,11 @@ const ParticleBackground = React.memo(() => {
             },
             particles: {
                 color: {
-                    value: "#ffffff",
+                    value: "#4d4d4d",
                 },
                 links: {
-                    color: "#ffffff",
-                    distance: 200,
+                    color: "#616161",
+                    distance: 225,
                     enable: true,
                     opacity: 0.5,
                     width: 1,
@@ -71,13 +71,13 @@ const ParticleBackground = React.memo(() => {
                     value: 80,
                 },
                 opacity: {
-                    value: 0.5,
+                    value: 0.4,
                 },
                 shape: {
                     type: "circle",
                 },
                 size: {
-                    value: { min: 1, max: 5 },
+                    value: { min: 1, max: 4 },
                 },
             },
             detectRetina: true,
