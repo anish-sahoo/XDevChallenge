@@ -65,7 +65,7 @@ function App() {
             }
           >
             <div className={`z-10 ${searchClicked ? 'hidden' : 'flex flex-col items-center'}`}>
-              <h1 className="text-4xl text-white font-public-sans pb-3">X Finance</h1>
+              <h1 className="text-4xl text-white font-public-sans mb-28">X Finance</h1>
             </div>
             <motion.div
               initial={{opacity: 0}}
