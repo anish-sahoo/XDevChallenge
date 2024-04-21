@@ -6,6 +6,7 @@ import ParticleBackground from "./components/ParticleBackground.tsx";
 import StockChart from "./components/StockChart.tsx";
 import StockDataMap from "./StockDataMap.ts";
 import { motion } from 'framer-motion';
+import obj from "./StockApiReturn.ts";
 
 function App() {
     const [searchClicked, setSearchClicked] = useState<boolean>(false);
@@ -14,7 +15,7 @@ function App() {
     const [stockData, setStockData] = useState<StockDataMap>({});
     const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
-        await axios.post("http://localhost:5000/api/v1/search", {
+        await axios.post("https://api.asahoo.dev/api/v1/search", {
             search_term: term,
         }).then((response: AxiosResponse) => {
             console.log(response.data);
@@ -27,7 +28,7 @@ function App() {
     const getStockData = async (stock: string): Promise<StockDataMap> => {
         // fetch data from the API
       try {
-        const response: AxiosResponse = await axios.post("http://localhost:5000/api/v1/stock", {
+        const response: AxiosResponse = await axios.post("https://api.asahoo.dev/api/v1/stock", {
             stock_name: stock,
             interval: 30,
         });
@@ -42,11 +43,18 @@ function App() {
     const handleSearch = async (term: string) => {
         setLoading(true);
         console.log(term);
-        await getSearchResults(term);
-        // const stockDataFromAPI = await getStockData(term);
-        // console.log('Stock data from API in handle search:\n', JSON.stringify(stockDataFromAPI));
-        // setStockData(stockDataFromAPI);
-        // console.log('Stock data in handle search:\n', JSON.stringify(stockData));
+        const searchResult = await getSearchResults(term);
+        console.log('searchresult',searchResult);
+        if(searchResult === '') {
+          console.log('No search results found');
+            setLoading(false);
+            setStockData({});
+            return;
+        }
+        const stockDataFromAPI = await getStockData(term);
+        console.log('Stock data from API in handle search:\n', JSON.stringify(stockDataFromAPI));
+        setStockData(stockDataFromAPI);
+        console.log('Stock data in handle search:\n', JSON.stringify(stockData));
 
       // setLoading(true);
       // setTimeout(() => {
@@ -64,15 +72,15 @@ function App() {
             }
           >
             <div className={`z-10 ${searchClicked ? 'hidden' : 'flex flex-col items-center'}`}>
-              <h1 className="text-4xl text-white font-public-sans pb-3">X Finance</h1>
+              <h1 className="text-4xl text-white font-public-sans mb-28">X Finance</h1>
             </div>
             <motion.div
               initial={{opacity: 0}}
               animate={{opacity: searchClicked ? 1 : 0}}
               transition={{duration: 0.5}}
-              className={`fixed flex flex-col items-left top-0 left-0 text-5xl ${!searchClicked ? 'opacity-0' : 'text-gray-300 font-mono p-4'}`}
+              className={`fixed flex flex-col items-left top-0 left-0 md:text-5xl text-xl ${!searchClicked ? 'opacity-0' : 'text-gray-300 font-mono p-4'}`}
             >
-              <p className={"text-6xl font-bold font-public-sans text-white"}>X</p>
+              <p className={"md:text-6xl text-2xl font-bold font-public-sans text-white"}>X</p>
               <p>F</p>
               <p>I</p>
               <p>N</p>
@@ -98,9 +106,9 @@ function App() {
               </div>
             )}
             {
-                stockData != ({}) && searchClicked && !loading && (
+                searchClicked && !loading && searchTerm.length > 0 && (
                 <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
-                    <StockChart stockData={stockData}/>
+                  {stockData == ({})? <p>No Data</p> : <StockChart stockData={stockData}/>}
                 </div>
                 )
             }

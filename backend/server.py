@@ -8,7 +8,7 @@ from stockdata import getStockData
 load_dotenv()
 
 app = Quart(__name__)
-app = cors(app, allow_origin=["http://localhost:5173", "http://0.0.0.0:5173", "http://127.0.0.1:5173"])
+app = cors(app, allow_origin=["http://localhost:5173", "http://0.0.0.0:5173", "http://127.0.0.1:5173", "https://finance.asahoo.dev", "https://api.asahoo.dev"])
 
 
 @app.route('/')
@@ -35,11 +35,15 @@ async def stockdata():
     if request.method == 'POST':
         data = await request.get_json()
         print('JSON input', data)
-        stock_data = getStockData(data.get('stock_name'), data.get('interval'))
-        response = jsonify(stock_data)
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response
+        try:
+            stock_data = getStockData(data.get('stock_name'), data.get('interval'))
+            response = jsonify(stock_data)
+            response.headers.add('Access-Control-Allow-Origin', '*')
+            return response
+        except Exception as e:
+            print(e)
+            return jsonify({'error': f'Error fetching stock data {e}'}), 500
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(debug=True, host='127.0.0.1', port=int(os.environ.get('PORT', 4998)))
