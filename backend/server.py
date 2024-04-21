@@ -2,7 +2,7 @@ import os
 from quart import Quart, jsonify, request
 from dotenv import load_dotenv
 from quart_cors import cors
-from groktest import get_terms, gen_predictions, gen_short, gen_long, gen_old_predictions
+from groktest import get_terms, gen_predictions, gen_short
 from searchAllTest import get_all_tweets
 from stockdata import getStockData
 import json
@@ -63,12 +63,12 @@ async def predict():
             print('Tweets:', tweets_list)
             prediction = await gen_short(tweets_list, stock_data, stock_name)
             print('Gen Short>>>>>>>', prediction)
-            prediction2 = await gen_long(tweets_list, stock_data, stock_name)
-            print('Gen Long>>>>>>>', prediction2)
+#            prediction2 = await gen_long(tweets_list, stock_data, stock_name)
+#            print('Gen Long>>>>>>>', prediction2)
             prediction3 = await gen_predictions(tweets_list, stock_data, stock_name)
             print('Gen Predictions>>>>>>>', prediction3)
-            prediction4 = await gen_old_predictions(tweets_list, stock_data, stock_name)
-            print('Gen Old Predictions>>>>>>>', prediction4)
+#            prediction4 = await gen_old_predictions(tweets_list, stock_data, stock_name)
+#            print('Gen Old Predictions>>>>>>>', prediction4)
             return prediction
         except Exception as e:
             print('Exception',e)
