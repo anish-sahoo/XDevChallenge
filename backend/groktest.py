@@ -38,7 +38,9 @@ Assistant:"""
 async def get_terms(stock_name):
     await prompt(GET_TERMS_PROMPT.format(stock=stock_name))
     output = await sample(max_len=200, stop_strings=[".", "<|separator|>"], temperature=0.5)
+    # print(parse_output(output.as_string()))
     return parse_output(output.as_string())
+
 
 
 @prompt_fn
@@ -56,8 +58,8 @@ def parse_output(output):
     return parsed
 
 
-async def main():
-    await get_terms("POGHF")
-
-
-asyncio.run(main())
+# async def main():
+#     await get_terms("POGHF")
+#
+#
+# asyncio.run(main())
