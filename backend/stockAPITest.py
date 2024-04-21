@@ -1,8 +1,26 @@
+import json
+from datetime import datetime, timedelta
+
 import requests
 
-url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=TSLA&apikey=D4P0RORZRZQMECVT'
+symbol = 'AAPL'
+url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + symbol + '&apikey=D4P0RORZRZQMECVT'
 r = requests.get(url)
-data = r.json()
+json_data = r.json()
 
+last_refreshed_date_str = json_data['Meta Data']['3. Last Refreshed']
+last_refreshed_date = datetime.strptime(last_refreshed_date_str, '%Y-%m-%d')
 
-print(data)
+# Calculate the date 30 days ago from the last refreshed date
+thirty_days_ago = last_refreshed_date - timedelta(days=60)
+
+# Extract stock data for the last 30 days
+last_30_days_data = {}
+for date_str, data in json_data['Time Series (Daily)'].items():
+    date = datetime.strptime(date_str, '%Y-%m-%d')
+    if thirty_days_ago <= date <= last_refreshed_date:
+        last_30_days_data[date_str] = data
+
+# Display or further process the extracted data
+print("Stock data for the last 30 days:")
+print(json.dumps(last_30_days_data, indent=4))
