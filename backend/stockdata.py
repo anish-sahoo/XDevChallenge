@@ -2,9 +2,12 @@ from datetime import datetime, timedelta
 
 import requests
 
+api_key = 'BX21JNURWAU8G8ZM'
+api_key_will = 'D4P0RORZRZQMECVT'
+
 
 def getStockData(symbol, interval):
-    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + symbol + '&apikey=D4P0RORZRZQMECVT'
+    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + symbol + f'&apikey={api_key}'
     r = requests.get(url)
     json_data = r.json()
 

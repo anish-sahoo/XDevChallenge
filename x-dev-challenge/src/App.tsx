@@ -3,50 +3,54 @@ import {useState} from "react";
 import {HashLoader} from "react-spinners";
 import axios, {AxiosResponse, AxiosError} from "axios";
 import ParticleBackground from "./components/ParticleBackground.tsx";
-import obj from "./StockApiReturn.ts";
 import StockChart from "./components/StockChart.tsx";
 import StockDataMap from "./StockDataMap.ts";
 import { motion } from 'framer-motion';
-import Card from "./components/card.tsx";
+import obj from "./StockApiReturn.ts";
 
 function App() {
     const [searchClicked, setSearchClicked] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [stockData, setStockData] = useState<StockDataMap>({});
-    const getSearchResults = async (term: string) => {
+    const [stockData, setStockData] = useState<StockDataMap>(obj);
+    const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
         await axios.post("http://localhost:5000/api/v1/search", {
             search_term: term,
         }).then((response: AxiosResponse) => {
             console.log(response.data);
+            return response.data.search_term || '';
         }).catch((error: AxiosError) => {
             console.log(error);
         });
+        return '';
     }
-    const getStockData = async (stock: string) => {
+    const getStockData = async (stock: string): Promise<StockDataMap> => {
         // fetch data from the API
         await axios.post("http://localhost:5000/api/v1/stock", {
             stock_name: stock,
             interval: 30,
         }).then((response: AxiosResponse) => {
             console.log(response.data);
+            return response.data;
         }).catch((error: AxiosError) => {
             console.log(error);
         });
+        return {};
     }
 
     const handleSearch = async (term: string) => {
         setLoading(true);
         console.log(term);
-        // await getSearchResults(term);
+        await getSearchResults(term);
         // const stockDataFromAPI = await getStockData(term);
-        // setStockData(stockDataFromAPI);
-      setLoading(true);
-      setTimeout(() => {
+        // console.log('Stock data from API:\n', JSON.stringify(stockDataFromAPI));
+        // setStockData(JSON.parse(JSON.stringify(stockDataFromAPI)));
+      // setLoading(true);
+      // setTimeout(() => {
         setLoading(false);
-        }, 3000);
-        setStockData(obj);
+        // }, 3000);
+        // setStockData(obj);
     };
 
     return (
