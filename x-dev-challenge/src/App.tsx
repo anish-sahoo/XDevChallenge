@@ -44,6 +44,7 @@ function App() {
         setLoading(true);
         console.log(term);
         const searchResult = await getSearchResults(term);
+        console.log('searchresult',searchResult);
         if(searchResult === '') {
           console.log('No search results found');
             setLoading(false);
