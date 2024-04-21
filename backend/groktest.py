@@ -31,30 +31,16 @@ Tweet List: {list}.<|separator|>
 
 Assistant:"""
 
-async def main():
-    """Runs the example."""
-    client = xai_sdk.Client(api_key='Eh97MbeIZ4p4UjhF4D8JVyTRAZm7oErMkdePDVi1jWzNYWPq47XPUFWgqcBd0Ysa7bfaAwrHZCVxK+pzGSVBaXUvHmKzZ8F34vsqwtDpI3hKBCf3rhIz/Obwir0obKZ9PQ')
-    term_list = await get_terms()
-    # await gen_modified(term_list)
 
-    # print(Ge, end="")
 @prompt_fn
-async def get_terms():
-    await prompt(GET_TERMS_PROMPT.format(stock="WMT"))
+async def get_terms(stock_name):
+    await prompt(GET_TERMS_PROMPT.format(stock=stock_name))
     output = await sample(max_len=200, stop_strings=[".", "<|separator|>"], temperature=0.5)
-    print(parse_output(output.as_string()))
     return parse_output(output.as_string())
 @prompt_fn
-async def gen_modified(term_list):
-    await prompt(GENERATE_SECONDARY_TERMS_PROMPT.format(list=term_list))
-    output = await sample(max_len=200, stop_strings=[".", "<|separator|>"], temperature=0.5)
-    print(parse_output(output.as_string()))
-    return parse_output(output.as_string())
-    # second_output = ""
-    # async for token in client.sampler.sample(GENERATE_SECONDARY_TERMS_PROMPT.format(list=output), max_len=200, stop_strings=[".", "<|separator|>"]):
-    #     second_output += token.token_str
-    # print(second_output)
-    
+async def gen_sentiments(tweet_list):
+    #TODO
+    return 0
 
 def parse_output(output):
     parsed = output.split(",")[:-1]
@@ -63,9 +49,3 @@ def parse_output(output):
         if "<|separator|>" in parsed[i]:
             parsed[i] = parsed[i].replace("<|separator|>", "")
     return parsed
-
-
-
-
-
-asyncio.run(main())
