@@ -5,7 +5,7 @@ from xai_sdk.ide import *
 import flask
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 
 PREAMBLE = """\
 A Human is asking the Assistant for help with specific tasks. The broader context of the task is \
