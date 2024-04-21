@@ -54,13 +54,13 @@ async def predict():
         print('JSON input', data)
         try:
             stock_name = data.get('stock_name')
-            print('Stock name:', stock_name)
+            # print('Stock name:', stock_name)
             terms = await get_terms(stock_name)
-            print('Terms:', terms)
+            # print('Terms:', terms)
             stock_data = getStockData(data.get('stock_name'), data.get('interval'))
-            print('Stock data:', stock_data)
+            # print('Stock data:', stock_data)
             tweets_list = get_all_tweets(terms)
-            print('Tweets:', tweets_list)
+            # print('Tweets:', tweets_list)
             prediction = await gen_predictions(tweets_list, stock_data, stock_name)
             print('Prediction:', prediction)
             return prediction
