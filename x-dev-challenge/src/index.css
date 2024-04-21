@@ -6,3 +6,7 @@
   font-family: "PublicSans";
   src: url("./assets/publicsans.otf");
 }
+
+.hidden {
+  opacity: 0;
+}
