@@ -169,7 +169,9 @@ async def gen_short(tweet_list, stock_list, stock_name):
     stock_list = parse_stock_input(stock_list)
     await prompt(GENERATE_SHORT_PREDICTIONS.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
     output = await sample(max_len=370, temperature=0.5, stop_strings=["<|separator|>"])
-    return output.as_string()
+    str_out = output.as_string()
+    str_out = str_out.split('\n')
+    return list(filter(lambda a: a != '', str_out))[1:]
 
 # @prompt_fn
 # async def gen_long(tweet_list, stock_list, stock_name):
