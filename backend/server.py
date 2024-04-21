@@ -47,39 +47,26 @@ async def stockdata():
             return jsonify({'error': f'Error fetching stock data {e}'}), 500
 
 
-# @app.route('/api/v1/predict', methods=['POST'])
-# async def predict():
-#     if request.method == 'POST':
-#         data = await request.get_json()
-#         print('JSON input', data)
-#         try:
-#             stock_name = data.get('stock_name')
-#             terms = await get_terms(stock_name)
-#             stock_data = getStockData(data.get('stock_name'), data.get('interval'))
-#             tweets_list = get_all_tweets(terms)
-#             prediction = await gen_predictions(tweets_list, stock_data, stock_name)
-#             return prediction
-#         except Exception as e:
-#             print(e)
-#             return jsonify({'error': f'Error fetching prediction {e}'}), 500
-
 @app.route('/api/v1/predict', methods=['POST'])
 async def predict():
     if request.method == 'POST':
         data = await request.get_json()
         print('JSON input', data)
         try:
-            # Convert the data dictionary to a JSON string
-            json_data = json.dumps(data)
-            # Pass the JSON string to the getStockData function
-            stock_data = getStockData(json_data, data.get('interval'))
-            response = jsonify(stock_data)
-            response.headers.add('Access-Control-Allow-Origin', '*')
-            return response
+            stock_name = data.get('stock_name')
+            print('Stock name:', stock_name)
+            terms = await get_terms(stock_name)
+            print('Terms:', terms)
+            stock_data = getStockData(data.get('stock_name'), data.get('interval'))
+            print('Stock data:', stock_data)
+            tweets_list = get_all_tweets(terms)
+            print('Tweets:', tweets_list)
+            prediction = await gen_predictions(tweets_list, stock_data, stock_name)
+            print('Prediction:', prediction)
+            return prediction
         except Exception as e:
             print(e)
-            return jsonify({'error': f'Error fetching stock data {e}'}), 500
-
+            return jsonify({'error': f'Error fetching prediction {e}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=int(os.environ.get('PORT', 4998)))

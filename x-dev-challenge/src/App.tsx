@@ -134,6 +134,8 @@ function App() {
                 <HashLoader color="#ffffff" loading={true} size={50}/>
               </div>
             )}
+            <div className={"flex flex-col"}>
+            <div className={"w-full h-full flex flex-row flex wrap p-24 gap-8"}>
             {
                 searchClicked && !loading && searchTerm.length > 0 && (
                 <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
@@ -141,6 +143,14 @@ function App() {
                 </div>
                 )
             }
+            <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
+              <h1>Future Stock Price</h1>
+            </div>
+            </div>
+              <div>
+                <h1>Stock Prediction</h1>
+              </div>
+            </div>
           </div>
         </>
     );
