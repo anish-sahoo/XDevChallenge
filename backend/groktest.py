@@ -131,7 +131,7 @@ def parse_tweet_input(input):
 def parse_stock_input(input):
     parsed = []
     print("parse_stock_input")
-    dict_form = json.loads(input)
+    dict_form = input
     for key in dict_form:
         entry = []
         entry.append(("1. open", dict_form[key]["1. open"]))
