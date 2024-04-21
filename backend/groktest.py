@@ -3,6 +3,7 @@ import asyncio
 import xai_sdk
 from xai_sdk.ide import *
 import flask
+
 PREAMBLE = """\
 A Human is asking the Assistant for help with specific tasks. The broader context of the task is \
 financial analysis. The assistant will take the human's task and find things in the API relating to \
@@ -37,12 +38,14 @@ Assistant:"""
 async def get_terms(stock_name):
     await prompt(GET_TERMS_PROMPT.format(stock=stock_name))
     output = await sample(max_len=200, stop_strings=[".", "<|separator|>"], temperature=0.5)
-    print(parse_output(output.as_string()))
+    return parse_output(output.as_string())
+
 
 @prompt_fn
 async def gen_sentiments(tweet_list):
-    #TODO
+    # TODO
     return 0
+
 
 def parse_output(output):
     parsed = output.split(",")[:-1]
@@ -51,6 +54,10 @@ def parse_output(output):
         if "<|separator|>" in parsed[i]:
             parsed[i] = parsed[i].replace("<|separator|>", "")
     return parsed
+
+
 async def main():
     await get_terms("POGHF")
+
+
 asyncio.run(main())
