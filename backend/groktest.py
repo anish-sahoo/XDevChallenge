@@ -101,6 +101,20 @@ async def gen_predictions(tweet_list, stock_list, stock_name):
     await prompt(GENERATE_PREDICTIONS_PROMPT.format(tweets=tweet_list, ))
     return 0
 
+@prompt_fn
+async def gen_short(tweet_list, stock_list, stock_name):
+    tweet_list = parse_tweet_input(tweet_list)
+
+    await prompt(GENERATE_SHORT_PREDICTIONS.format(tweets=tweet_list, ))
+    return 0
+
+@prompt_fn
+async def gen_long(tweet_list, stock_list, stock_name):
+    tweet_list = parse_tweet_input(tweet_list)
+
+    await prompt(GENERATE_LONG_PREDICTIONS.format(tweets=tweet_list, ))
+    return 0
+
 def parse_tweet_input(input):
     parsed = []
     for tweet in input:
