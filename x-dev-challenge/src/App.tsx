@@ -101,7 +101,7 @@ function App() {
             }
           >
             <div className={`z-10 ${searchClicked ? 'hidden' : 'flex flex-col items-center'}`}>
-              <h1 className="text-4xl text-white font-public-sans mb-28">X Finance</h1>
+              <h1 className="text-4xl text-white font-public-sans mb-12">X Finance</h1>
             </div>
             <motion.div
               initial={{opacity: 0}}
@@ -134,8 +134,8 @@ function App() {
                 <HashLoader color="#ffffff" loading={true} size={50}/>
               </div>
             )}
-            <div className={"flex flex-col"}>
-              <div className={"w-full h-full flex flex-row flex wrap p-24 gap-8"}>
+            <div className={"flex flex-row w-full h-full"}>
+              <div className={"w-full h-full flex flex-row justify-items-start p-8"}>
                 {
                   searchClicked && !loading && searchTerm.length > 0 && (
                     <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
@@ -143,15 +143,15 @@ function App() {
                     </div>
                   )
                 }
-                <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
-                  <h1>Future Stock Price</h1>
-                </div>
-                <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
-                  <h1>Future Stock Price</h1>
-                </div>
-                <div className={"backdrop-blur-sm bg-white w-full bg-opacity-5 p-4 rounded-xl"}>
-                  <h1>Future Stock Price</h1>
-                </div>
+              </div>
+              <div className={"w-full h-full flex flex-row justify-items-end p-8"}>
+                {
+                  searchClicked && !loading && searchTerm.length > 0 && (
+                    <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
+                      {stockData == ({}) ? <p>No Data</p> : <StockChart stockData={stockData}/>}
+                    </div>
+                  )
+                }
               </div>
             </div>
           </div>
