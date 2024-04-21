@@ -12,7 +12,7 @@ last_refreshed_date_str = json_data['Meta Data']['3. Last Refreshed']
 last_refreshed_date = datetime.strptime(last_refreshed_date_str, '%Y-%m-%d')
 
 # Calculate the date 30 days ago from the last refreshed date
-thirty_days_ago = last_refreshed_date - timedelta(days=60)
+thirty_days_ago = last_refreshed_date - timedelta(days=30)
 
 # Extract stock data for the last 30 days
 last_30_days_data = {}
