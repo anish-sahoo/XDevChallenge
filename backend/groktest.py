@@ -36,7 +36,7 @@ Assistant:"""
 async def get_terms(stock_name):
     await prompt(GET_TERMS_PROMPT.format(stock=stock_name))
     output = await sample(max_len=200, stop_strings=[".", "<|separator|>"], temperature=0.5)
-    return parse_output(output.as_string())
+    print(parse_output(output.as_string()))
 
 @prompt_fn
 async def gen_sentiments(tweet_list):
@@ -50,3 +50,6 @@ def parse_output(output):
         if "<|separator|>" in parsed[i]:
             parsed[i] = parsed[i].replace("<|separator|>", "")
     return parsed
+async def main():
+    await get_terms("POGHF")
+asyncio.run(main())
