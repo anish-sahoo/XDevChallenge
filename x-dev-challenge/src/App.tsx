@@ -153,7 +153,7 @@ function App() {
                   <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
                       <div>
                         {prediction.length > 0 && prediction.map((pred, index) => {
-                          return <p key={index}>{pred.replace('<|separator|>', '')}</p>})}
+                          return <p key={index} className={"mb-2"}>{pred.replace('<|separator|>', '')}</p>})}
                       </div>
                   </div>
                   )
