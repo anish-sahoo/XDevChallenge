@@ -5,6 +5,7 @@ from xai_sdk.ide import *
 import flask
 import json
 import re
+from datetime import datetime
 
 PREAMBLE = """\
 A Human is asking the Assistant for help with specific tasks. The broader context of the task is \
@@ -36,9 +37,9 @@ Assistant:"""
 
 GENERATE_PREDICTIONS_PROMPT = """\
 Human: There will be 2 provided lists and a Stock Name. A Tweet List and Stock Price List. The Tweet List will be formatted \
-as a list of tuples. Each tuple has string for the tweet and a number of likes. These tweets contain information \
-about the stock and relevant fields and topics to the stock. For a pizza company stock it would look like: \
-[('I love pizza', 5), ('Pizza is the best', 20), ('Cheese has been cheaper lately', 6), ('Italian restaurants have been popular lately', 19)]. \
+as a list of tuples. Each tuple has string for the tweet, number of likes, and the day it was posted. These tweets contain information \
+about the stock and relevant fields and topics to the stock. The date is formatted: YYYY-MM-DD For a pizza company stock it would look like: \
+[('I love pizza', 5, '2024-04-19'), ('Pizza is the best', 20, '2024-04-20'), ('Cheese has been cheaper lately', 6, '2024-04-19'), ('Italian restaurants have been popular lately', 19, '2024-04-20')]. \
 The Stock Price List will be formatted as a list of list of tuples. Each internal list has 4 tuples and a string \
 which contain the open, high, low, close, and date of the stock price. The tuples have a \
 string for the label and a string for the dollar value of the stock the label. For Example: ('1. open', '5.67') \
@@ -55,9 +56,9 @@ Assistant:"""
 
 GENERATE_SHORT_PREDICTIONS = """\
 Human: There will be 2 provided lists and a Stock Name. A Tweet List and Stock Price List. The Tweet List will be formatted \
-as a list of tuples. Each tuple has string for the tweet and a number of likes. These tweets contain information \
-about the stock and relevant fields and topics to the stock. For a pizza company stock it would look like: \
-[('I love pizza', 5), ('Pizza is the best', 20), ('Cheese has been cheaper lately', 6), ('Italian restaurants have been popular lately', 19)]. \
+as a list of tuples. Each tuple has string for the tweet, number of likes, and the day it was posted. These tweets contain information \
+about the stock and relevant fields and topics to the stock. The date is formatted: YYYY-MM-DD For a pizza company stock it would look like: \
+[('I love pizza', 5, '2024-04-19'), ('Pizza is the best', 20, '2024-04-20'), ('Cheese has been cheaper lately', 6, '2024-04-19'), ('Italian restaurants have been popular lately', 19, '2024-04-20')]. \
 The Stock Price List will be formatted as a list of list of tuples. Each internal list has 5 tuples \
 which contain the open, high, low, close, and date of the stock price. The 4 of the tuples have a \
 string for the label and a string for the dollar value of the stock the label. For Example: ('1. open', '5.67') \
@@ -73,9 +74,9 @@ Assistant:"""
 
 GENERATE_LONG_PREDICTIONS = """\
 Human: There will be 2 provided lists and a Stock Name. A Tweet List and Stock Price List. The Tweet List will be formatted \
-as a list of tuples. Each tuple has string for the tweet and a number of likes. These tweets contain information \
-about the stock and relevant fields and topics to the stock. For a pizza company stock it would look like: \
-[('I love pizza', 5), ('Pizza is the best', 20), ('Cheese has been cheaper lately', 6), ('Italian restaurants have been popular lately', 19)]. \
+as a list of tuples. Each tuple has string for the tweet, number of likes, and the day it was posted. These tweets contain information \
+about the stock and relevant fields and topics to the stock. The date is formatted: YYYY-MM-DD For a pizza company stock it would look like: \
+[('I love pizza', 5, '2024-04-19'), ('Pizza is the best', 20, '2024-04-20'), ('Cheese has been cheaper lately', 6, '2024-04-19'), ('Italian restaurants have been popular lately', 19, '2024-04-20')]. \
 The Stock Price List will be formatted as a list of list of tuples. Each internal list has 5 tuples \
 which contain the open, high, low, close, and date of the stock price. The 4 of the tuples have a \
 string for the label and a string for the dollar value of the stock the label. For Example: ('1. open', '5.67') \
@@ -123,11 +124,13 @@ async def gen_long(tweet_list, stock_list, stock_name):
 def parse_tweet_input(input):
     parsed = []
     for tweet in input:
-        parsed.append((tweet.text, tweet["public_metrics"]["like_count"]))
+        datetime_time = tweet["created_at"].replace(tzinfo=timezone.utc)
+        parsed.append((tweet.text, tweet["public_metrics"]["like_count"], datetime_time.strftime("%Y-%m-%d")))
     return parsed
 
 def parse_stock_input(input):
     parsed = []
+    print("parse_stock_input")
     dict_form = json.loads(input)
     for key in dict_form:
         entry = []
@@ -165,4 +168,5 @@ def parse_stock_output(str_out):
 
             temp_dict[l[0]] = l[1]
         new_dict[t[-1]] = temp_dict
+    print("parse_stock_output")
     return json.dumps(new_dict)
