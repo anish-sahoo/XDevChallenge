@@ -6,15 +6,16 @@ import ParticleBackground from "./components/ParticleBackground.tsx";
 import StockChart from "./components/StockChart.tsx";
 import StockDataMap from "./StockDataMap.ts";
 import { motion } from 'framer-motion';
+import obj from "./StockApiReturn.ts";
 
 function App() {
     const [searchClicked, setSearchClicked] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [stockData, setStockData] = useState<StockDataMap>({});
+    const [stockData, setStockData] = useState<StockDataMap>(obj);
     const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
-        await axios.post("http://localhost:5000/api/v1/search", {
+        await axios.post("http://localhost:4998/api/v1/search", {
             search_term: term,
         }).then((response: AxiosResponse) => {
             console.log(response.data);
@@ -27,7 +28,7 @@ function App() {
     const getStockData = async (stock: string): Promise<StockDataMap> => {
         // fetch data from the API
       try {
-        const response: AxiosResponse = await axios.post("http://localhost:5000/api/v1/stock", {
+        const response: AxiosResponse = await axios.post("http://localhost:4998/api/v1/stock", {
             stock_name: stock,
             interval: 30,
         });
@@ -43,10 +44,10 @@ function App() {
         setLoading(true);
         console.log(term);
         await getSearchResults(term);
-        // const stockDataFromAPI = await getStockData(term);
-        // console.log('Stock data from API in handle search:\n', JSON.stringify(stockDataFromAPI));
-        // setStockData(stockDataFromAPI);
-        // console.log('Stock data in handle search:\n', JSON.stringify(stockData));
+        const stockDataFromAPI = await getStockData(term);
+        console.log('Stock data from API in handle search:\n', JSON.stringify(stockDataFromAPI));
+        setStockData(stockDataFromAPI);
+        console.log('Stock data in handle search:\n', JSON.stringify(stockData));
 
       // setLoading(true);
       // setTimeout(() => {
@@ -98,7 +99,7 @@ function App() {
               </div>
             )}
             {
-                stockData != ({}) && searchClicked && !loading && (
+                stockData != ({}) && stockData != obj && searchClicked && !loading && searchTerm.length > 0 && (
                 <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
                     <StockChart stockData={stockData}/>
                 </div>
