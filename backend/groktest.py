@@ -113,7 +113,7 @@ is the open price of the stock. The last tuple has a string for the date of the 
 [[('1. open', '3.34'), ('2. high', '4.12'), ('3. low', '2.94'), ('4. close', '3.72'), ('2024-04-19')], \
 [('1. open', '3.72'), ('2. high', '4.22'), ('3. low', '3.34'), ('4. close', '3.94'), ('2024-04-20')]] \
 Use the information about the public and financial opinion data from the tweets in combination with the stock data \
-to predict the short term outlook of the stock and return a list of three key elements of the short term outlook and brief explanations. \
+to predict the short term outlook of the stock and return a list of three key elements of the short term outlook and one sentence explanations. \
 Tweet List: {tweets}, Stock Price List: {stocks}, Stock Name: {ticker}<|separator|>
 
 Assistant:"""
@@ -148,7 +148,6 @@ async def gen_predictions(tweet_list, stock_list, stock_name):
     stock_list = parse_stock_input(stock_list)
     await prompt(GENERATE_PREDICTIONS_PROMPT.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
     output = await sample(max_len=250, temperature=0.3, stop_strings=["<|separator|>"])
-    print("old predict num tokens",len(output.tokens))
     str_out = output.as_string()
     return parse_stock_output(str_out)
     # return str_out
@@ -170,7 +169,6 @@ async def gen_short(tweet_list, stock_list, stock_name):
     stock_list = parse_stock_input(stock_list)
     await prompt(GENERATE_SHORT_PREDICTIONS.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
     output = await sample(max_len=370, temperature=0.5, stop_strings=["<|separator|>"])
-    print("short num tokens",len(output.tokens))
     return output.as_string()
 
 # @prompt_fn
@@ -230,20 +228,20 @@ def parse_stock_output(str_out):
     if(len(open) != 3 or len(high) != 3 or len(low) != 3):
         return "Could not calculate"
     return [low, open, high]
-    str_out = str_out[2:-2]
-    str_out = str_out.split("], [")
-    new_dict = {}
-    for t in str_out:
-        temp_dict= {}
-        t = t[1:]
-        t = t.split("), (")
-        temp = t[-1].split('), ')
-        t.pop(-1)
-        t.extend(temp)
-        for l in t[:-1]:
-            l = l.split(", ")
+    # str_out = str_out[2:-2]
+    # str_out = str_out.split("], [")
+    # new_dict = {}
+    # for t in str_out:
+    #     temp_dict= {}
+    #     t = t[1:]
+    #     t = t.split("), (")
+    #     temp = t[-1].split('), ')
+    #     t.pop(-1)
+    #     t.extend(temp)
+    #     for l in t[:-1]:
+    #         l = l.split(", ")
 
-            temp_dict[l[0]] = l[1]
-        new_dict[t[-1]] = temp_dict
-    print("parse_stock_output")
-    return json.dumps(new_dict)
+    #         temp_dict[l[0]] = l[1]
+    #     new_dict[t[-1]] = temp_dict
+    # print("parse_stock_output")
+    # return json.dumps(new_dict)
