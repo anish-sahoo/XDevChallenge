@@ -150,7 +150,8 @@ async def gen_predictions(tweet_list, stock_list, stock_name):
     output = await sample(max_len=250, temperature=0.3, stop_strings=["<|separator|>"])
     print("old predict num tokens",len(output.tokens))
     str_out = output.as_string()
-    return parse_stock_output(str_out)
+    # return parse_stock_output(str_out)
+    return str_out
 
 # @prompt_fn
 # async def gen_predictions(tweet_list, stock_list, stock_name):
