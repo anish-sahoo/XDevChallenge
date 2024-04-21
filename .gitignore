@@ -6,3 +6,4 @@ backend/.env
 backend/venv
 rust-backend/target
 rust-backend/.env
+backend/__pycache__

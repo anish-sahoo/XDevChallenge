@@ -1,30 +1,30 @@
 import os
-
-from flask import Flask, jsonify, request
+from quart import Quart, jsonify, request
 from dotenv import load_dotenv
-from flask_cors import CORS, cross_origin
-
+from quart_cors import cors
+from groktest import get_terms
 
 load_dotenv()
 
-app = Flask(__name__)
-CORS(app)
+app = Quart(__name__)
+app = cors(app, allow_origin=["http://localhost:5173", "http://0.0.0.0:5173", "http://127.0.0.1:5173"])
 
 @app.route('/')
-def hello():
+async def hello():
     return 'Hello, World! This is my Flask application. This endpoint should not be called.'
 
-
 @app.route('/api/v1/search', methods=['POST'])
-@cross_origin()
-def test():
+async def test():
     if request.method == 'POST':
-        data = request.get_json()
-        print(data.get('search_term'))
-        return jsonify({'message': f'{data.get("search_term", "No search term provided")}'})
+        data = await request.get_json()
 
+        print(data)
+        terms = await get_terms(data.get('search_term'))
+        print(terms)
+        response = jsonify({'result': f'{terms}'})
+        response.headers.add('Access-Control-Allow-Origin', '*')  # Add CORS header
+        return response
     return jsonify({'error': 'Method not allowed'}), 405
 
-
 if __name__ == '__main__':
-    app.run(debug=True, port=os.getenv('PORT', 5000), host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
