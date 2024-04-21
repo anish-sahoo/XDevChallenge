@@ -113,7 +113,7 @@ is the open price of the stock. The last tuple has a string for the date of the 
 [[('1. open', '3.34'), ('2. high', '4.12'), ('3. low', '2.94'), ('4. close', '3.72'), ('2024-04-19')], \
 [('1. open', '3.72'), ('2. high', '4.22'), ('3. low', '3.34'), ('4. close', '3.94'), ('2024-04-20')]] \
 Use the information about the public and financial opinion data from the tweets in combination with the stock data \
-to predict the short term outlook of the stock and return a list of three key elements of the short term outlook and their explanations. \
+to predict the short term outlook of the stock and return a list of three key elements of the short term outlook and brief explanations. \
 Tweet List: {tweets}, Stock Price List: {stocks}, Stock Name: {ticker}<|separator|>
 
 Assistant:"""
@@ -150,8 +150,8 @@ async def gen_predictions(tweet_list, stock_list, stock_name):
     output = await sample(max_len=250, temperature=0.3, stop_strings=["<|separator|>"])
     print("old predict num tokens",len(output.tokens))
     str_out = output.as_string()
-    # return parse_stock_output(str_out)
-    return str_out
+    return parse_stock_output(str_out)
+    # return str_out
 
 # @prompt_fn
 # async def gen_predictions(tweet_list, stock_list, stock_name):
@@ -215,6 +215,21 @@ def parse_term_output(output):
     return parsed
 
 def parse_stock_output(str_out):
+    res_open = [i.end() for i in re.finditer("open:", str_out)] 
+    open=[]
+    res_high = [i.end() for i in re.finditer("high:", str_out)]
+    high=[]
+    res_low = [i.end() for i in re.finditer("low:", str_out)]
+    low=[]
+    for i in res_open:
+        open.append(re.search("\d+.\d{2}", str_out[i:]).group())
+    for i in res_high:
+        high.append(re.search("\d+.\d{2}", str_out[i:]).group())
+    for i in res_low:
+        low.append(re.search("\d+.\d{2}", str_out[i:]).group())
+    if(len(open) != 3 or len(high) != 3 or len(low) != 3):
+        return "Could not calculate"
+    return [low, open, high]
     str_out = str_out[2:-2]
     str_out = str_out.split("], [")
     new_dict = {}
