@@ -14,6 +14,8 @@ function App() {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [stockData, setStockData] = useState<StockDataMap>({});
+    const [prediction, setPrediction] = useState<string>('');
+
     const getSearchResults = async (term: string): Promise<string> => {
         // fetch data from the API
         try {
@@ -51,20 +53,21 @@ function App() {
     }
     }
 
-    const getPrediction = async (stock: string): Promise<StockDataMap> => {
+    const getPrediction = async (stock: string): Promise<string> => {
         // fetch data from the API
       console.log('Getting prediction for stock:', stock, 'interval:', 30)
-        await axios.post("https://api.asahoo.dev/api/v1/predict", {
+      try{
+      const response = await axios.post("https://api.asahoo.dev/api/v1/predict", {
             stock_name: stock,
             interval: 30,
-        }).then((response: AxiosResponse) => {
-            console.log('Response received from getPrediction',JSON.stringify(response.data));
-            return response.data || {};
-        }).catch((error: AxiosError) => {
-            console.log(error);
         });
-      console.log('No prediction data found')
-        return {};
+            console.log('Response received from getPrediction',JSON.stringify(response.data));
+            return JSON.stringify(response.data) || '';
+      }
+      catch (error) {
+        console.log(error);
+        return '';
+      }
     }
 
     const handleSearch = async (term: string) => {
@@ -83,7 +86,8 @@ function App() {
         setStockData(stockDataFromAPI);
         console.log('Stock data in handle search:\n', JSON.stringify(stockData));
         const prediction = await getPrediction(term);
-        console.log('Prediction data in handle search:\n', JSON.stringify(prediction));
+        console.log('Prediction data in handle search:\n', prediction);
+        setPrediction(prediction);
 
       // setLoading(true);
       // setTimeout(() => {
@@ -134,8 +138,8 @@ function App() {
                 <HashLoader color="#ffffff" loading={true} size={50}/>
               </div>
             )}
-            <div className={"flex flex-row w-full h-full"}>
-              <div className={"w-full h-full flex flex-row justify-items-start p-8"}>
+            <div className={"flex flex-row w-full h-full mt-16"}>
+              <div className={"w-full h-full flex flex-row justify-items-start p-8 pl-24"}>
                 {
                   searchClicked && !loading && searchTerm.length > 0 && (
                     <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
@@ -144,12 +148,15 @@ function App() {
                   )
                 }
               </div>
-              <div className={"w-full h-full flex flex-row justify-items-end p-8"}>
+              <div className={"w-full h-full flex flex-row justify-center items-center p-8"}>
                 {
                   searchClicked && !loading && searchTerm.length > 0 && (
-                    <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
-                      {stockData == ({}) ? <p>No Data</p> : <StockChart stockData={stockData}/>}
-                    </div>
+                  <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
+                    {/*<p>{prediction}</p>*/}
+                    {prediction.split('\n').map((line, index) => (
+                      <p key={index}>{line}</p>
+                    ))}
+                  </div>
                   )
                 }
               </div>
