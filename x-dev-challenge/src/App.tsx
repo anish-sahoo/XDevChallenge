@@ -7,6 +7,7 @@ import obj from "./StockApiReturn.ts";
 import StockChart from "./components/StockChart.tsx";
 import StockDataMap from "./StockDataMap.ts";
 import { motion } from 'framer-motion';
+import Card from "./components/card.tsx";
 
 function App() {
     const [searchClicked, setSearchClicked] = useState<boolean>(false);
@@ -38,10 +39,13 @@ function App() {
     const handleSearch = async (term: string) => {
         setLoading(true);
         console.log(term);
-        await getSearchResults(term);
+        // await getSearchResults(term);
         // const stockDataFromAPI = await getStockData(term);
         // setStockData(stockDataFromAPI);
+      setLoading(true);
+      setTimeout(() => {
         setLoading(false);
+        }, 3000);
         setStockData(obj);
     };
 
@@ -87,11 +91,13 @@ function App() {
                 <HashLoader color="#ffffff" loading={true} size={50}/>
               </div>
             )}
-            // {/*{*/}
-            // {/*    stockData && searchClicked && !loading && (*/}
-            // {/*        <StockChart stockData={stockData}/>*/}
-            // {/*    )*/}
-            // {/*}*/}
+            {
+                stockData && searchClicked && !loading && (
+                <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
+                    <StockChart stockData={stockData}/>
+                </div>
+                )
+            }
           </div>
         </>
     );

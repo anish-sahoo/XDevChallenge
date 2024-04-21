@@ -29,7 +29,7 @@ const SearchBar = ({
 
   return (
     <motion.div
-      className="relative w-full flex justify-center text-black"
+      className="fixed w-full flex justify-center text-black"
       initial={{ y: 0 }}
       animate={{ y: searchClicked && searchTerm.length > 0 ? "-40vh" : 0 }} // Move up when searchTerm is not empty
       transition={{ type: "spring", duration: 0.5 }} // Adjust the transition type and duration

@@ -18,14 +18,14 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
   useEffect(() => {
     if (!svgRef.current || data.length === 0) return;
 
-    const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+    const margin = { top: 20, right: 30, bottom: 60, left: 60 }; // Adjust bottom margin for legend
     const width = 600 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
     const svg = d3
       .select(svgRef.current)
       .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("height", height + margin.top + margin.bottom) // Adjust for legend
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -49,6 +49,22 @@ const LineChart: React.FC<LineChartProps> = ({ data }) => {
       .y((d) => y(d.open));
 
     svg.append("g").call(d3.axisLeft(y));
+
+    // Legend
+    const legend = svg
+      .append("g")
+      .attr("transform", `translate(${width - 100}, 0)`); // Adjust for legend position
+
+    legend
+      .selectAll("legend")
+      .data(["Open", "High", "Low"])
+      .enter()
+      .append("text")
+      .attr("x", 0)
+      .attr("y", (d, i) => 20 * i)
+      .text((d) => d)
+      .style("fill", (d, i) => ["steelblue", "green", "red"][i]);
+
     svg
       .append("path")
       .datum(data)
