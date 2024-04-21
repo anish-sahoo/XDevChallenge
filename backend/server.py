@@ -2,13 +2,15 @@ import os
 from quart import Quart, jsonify, request
 from dotenv import load_dotenv
 from quart_cors import cors
-from groktest import get_terms
+from groktest import get_terms, gen_predictions, gen_short, gen_long
+from searchAllTest import get_all_tweets
 from stockdata import getStockData
+import json
 
 load_dotenv()
 
 app = Quart(__name__)
-app = cors(app, allow_origin=["http://localhost:5173", "http://0.0.0.0:5173", "http://127.0.0.1:5173", "https://finance.asahoo.dev", "https://api.asahoo.dev"])
+app = cors(app, allow_origin="*")
 
 
 @app.route('/')
@@ -44,6 +46,27 @@ async def stockdata():
             print(e)
             return jsonify({'error': f'Error fetching stock data {e}'}), 500
 
+
+@app.route('/api/v1/predict', methods=['POST'])
+async def predict():
+    if request.method == 'POST':
+        data = await request.get_json()
+        print('JSON input', data)
+        try:
+            stock_name = data.get('stock_name')
+            print('Stock name:', stock_name)
+            terms = await get_terms(stock_name)
+            print('Terms:', terms)
+            stock_data = getStockData(data.get('stock_name'), data.get('interval'))
+            print('Stock data:', stock_data)
+            tweets_list = get_all_tweets(terms)
+            print('Tweets:', tweets_list)
+            prediction = await gen_predictions(tweets_list, stock_data, stock_name)
+            print('Prediction:', prediction)
+            return prediction
+        except Exception as e:
+            print(e)
+            return jsonify({'error': f'Error fetching prediction {e}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='127.0.0.1', port=int(os.environ.get('PORT', 4998)))
