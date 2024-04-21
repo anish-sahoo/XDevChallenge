@@ -108,7 +108,7 @@ function App() {
             {
                 searchClicked && !loading && searchTerm.length > 0 && (
                 <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
-                  {stockData != ({}) ? <StockChart stockData={stockData}/> : <p>No data found</p>}
+                  {stockData == ({})? <p>No Data</p> : <StockChart stockData={stockData}/>}
                 </div>
                 )
             }
