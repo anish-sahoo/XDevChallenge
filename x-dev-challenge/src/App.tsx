@@ -1,12 +1,11 @@
 import SearchBar from "./components/searchBar.tsx";
 import {useState} from "react";
 import {HashLoader} from "react-spinners";
-import axios, {AxiosResponse, AxiosError} from "axios";
+import axios, {AxiosResponse} from "axios";
 import ParticleBackground from "./components/ParticleBackground.tsx";
 import StockChart from "./components/StockChart.tsx";
 import StockDataMap from "./StockDataMap.ts";
 import { motion } from 'framer-motion';
-import obj from "./StockApiReturn.ts";
 
 
 function App() {
@@ -113,7 +112,7 @@ function App() {
               transition={{duration: 0.5}}
               className={`fixed flex flex-col items-left top-0 left-0 md:text-5xl text-xl ${!searchClicked ? 'opacity-0' : 'text-gray-300 font-mono p-4'}`}
             >
-              <p className={"md:text-6xl text-2xl font-bold font-public-sans text-white"}>X</p>
+              <p className={"md:text-5xl text-2xl font-bold font-public-sans text-white"}>X</p>
               <p>F</p>
               <p>I</p>
               <p>N</p>
@@ -152,10 +151,9 @@ function App() {
                 {
                   searchClicked && !loading && searchTerm.length > 0 && (
                   <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
-                    {/*<p>{prediction}</p>*/}
-                    {prediction.split('\n').map((line, index) => (
-                      <p key={index}>{line}</p>
-                    ))}
+                      <div>
+                      <p>{prediction}</p>
+                      </div>
                   </div>
                   )
                 }
