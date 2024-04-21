@@ -61,7 +61,7 @@ function App() {
             interval: 30,
         });
             console.log('Response received from getPrediction',JSON.stringify(response.data));
-            return JSON.stringify(response.data) || '';
+            return response.data || '';
       }
       catch (error) {
         console.log(error);
@@ -152,7 +152,8 @@ function App() {
                   searchClicked && !loading && searchTerm.length > 0 && (
                   <div className={"backdrop-blur-sm bg-white bg-opacity-5 p-4 rounded-xl"}>
                       <div>
-                      <p>{prediction}</p>
+                        {prediction.split('\n').map((pred, index) => {
+                          return <p key={index}>{pred}</p>})}
                       </div>
                   </div>
                   )
