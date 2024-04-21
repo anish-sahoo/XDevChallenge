@@ -30,7 +30,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData }) => {
 
   return (
     <div className={"text-white z-50 flex justify-center items-center flex-col"}>
-      <h1>Stock Chart</h1>
+      <h1>Last 30 Days:</h1>
       <LineChart data={data} />
     </div>
   );
