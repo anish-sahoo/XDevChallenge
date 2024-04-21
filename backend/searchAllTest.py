@@ -32,7 +32,7 @@ def get_all_tweets(list_terms):
     def filter_tweets(tweets_list):
         temp_list = []
         for tweet in tweets_list:
-            if tweet["public_metrics"]["like_count"] > 7:
+            if tweet["public_metrics"]["like_count"] > 9:
                 temp_list.append(tweet)
         filtered_tweets.extend(temp_list)
     t_list = []
@@ -40,7 +40,7 @@ def get_all_tweets(list_terms):
     for term in list_terms:
         format_string = "%Y-%m-%dT%H:%M:%SZ"
         datetime_time = datetime.strptime(default_end_time, format_string).replace(tzinfo=timezone.utc)
-        while (datetime.now(timezone.utc) - datetime_time).days < 7 and len(filtered_tweets) < 25:
+        while (datetime.now(timezone.utc) - datetime_time).days < 7 and len(filtered_tweets) < 17:
             print(datetime_time.strftime(format_string))
             tweets = gather_tweets(datetime_time.strftime(format_string), term)
             if (tweets.data is None):
