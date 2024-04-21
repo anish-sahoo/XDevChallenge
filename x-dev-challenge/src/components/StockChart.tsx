@@ -1,29 +1,39 @@
-import StockDataMap from "../StockDataMap.ts";
+import React from "react";
+import LineChart from "./LineChart";
 
-type StockChartProps = {
-  stockData: StockDataMap;
+interface StockData {
+  [date: string]: {
+    "1. open": string;
+    "2. high": string;
+    "3. low": string;
+    "4. close": string;
+    "5. volume": string;
+  };
 }
 
-const StockChart = ( {stockData}: StockChartProps ) => {
+interface StockChartProps {
+  stockData: StockData;
+}
+
+const StockChart: React.FC<StockChartProps> = ({ stockData }) => {
+  const data = Object.keys(stockData).map((date) => {
+    return {
+      date,
+      open: parseFloat(stockData[date]["1. open"]),
+      high: parseFloat(stockData[date]["2. high"]),
+      low: parseFloat(stockData[date]["3. low"]),
+    };
+  });
+
+  console.log('Stock Data:', stockData);
+  console.log('Data:', data);
+
   return (
-    <div className={"text-white z-50"}>
+    <div className={"text-white z-50 flex justify-center items-center flex-col"}>
       <h1>Stock Chart</h1>
-      {Object.keys(stockData).map((date) => {
-        return (
-          <div key={date}>
-            <h2>{date}</h2>
-            <ul>
-              <li>Open: {stockData[date]["1. open"]}</li>
-              <li>High: {stockData[date]["2. high"]}</li>
-              <li>Low: {stockData[date]["3. low"]}</li>
-              <li>Close: {stockData[date]["4. close"]}</li>
-              <li>Volume: {stockData[date]["5. volume"]}</li>
-            </ul>
-          </div>
-        );
-      })}
+      <LineChart data={data} />
     </div>
   );
-}
+};
 
 export default StockChart;
