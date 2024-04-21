@@ -102,30 +102,23 @@ async def gen_predictions(tweet_list, stock_list, stock_name):
     await prompt(GENERATE_PREDICTIONS_PROMPT.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
     output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
     str_out = output.as_string()
-    str_out = str_out[2:-2]
-    str_out = str_out.split("], [")
-    for t in str_out:
-        t = t.split("), (")
-        temp = t[-1].split('), ')
-        t.pop(-1)
-        t.extend(temp)
-        for l in t:
-            l = l.split(", ")
     return parse_stock_output(str_out)
 
 @prompt_fn
 async def gen_short(tweet_list, stock_list, stock_name):
     tweet_list = parse_tweet_input(tweet_list)
-
-    await prompt(GENERATE_SHORT_PREDICTIONS.format(tweets=tweet_list, ))
-    return 0
+    stock_list = parse_stock_input(stock_list)
+    await prompt(GENERATE_SHORT_PREDICTIONS.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
+    output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
+    return output.as_string()
 
 @prompt_fn
 async def gen_long(tweet_list, stock_list, stock_name):
     tweet_list = parse_tweet_input(tweet_list)
-
-    await prompt(GENERATE_LONG_PREDICTIONS.format(tweets=tweet_list, ))
-    return 0
+    stock_list = parse_stock_input(stock_list)
+    await prompt(GENERATE_LONG_PREDICTIONS.format(tweets=tweet_list, stocks=stock_list, ticker=stock_name))
+    output = await sample(max_len=1024, stop_strings=[".", "<|separator|>"], temperature=0.5)
+    return output.as_string()
 
 def parse_tweet_input(input):
     parsed = []
