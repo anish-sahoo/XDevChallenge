@@ -5,10 +5,11 @@ import requests
 api_key = 'BX21JNURWAU8G8ZM'
 api_key_will = 'D4P0RORZRZQMECVT'
 api_key_will2 = '9SM5Z7ADUI0PCY1Q'
+api_key_tmm = 'D7S4E7R5MBJSZMEO'
 
 
 def getStockData(symbol, interval):
-    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + symbol + f'&apikey={api_key_will2}'
+    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + symbol + f'&apikey={api_key_tmm}'
     r = requests.get(url)
     json_data = r.json()
 
