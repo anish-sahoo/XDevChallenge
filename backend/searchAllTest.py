@@ -1,3 +1,4 @@
+import sys
 from pprint import pprint
 
 import tweepy
@@ -7,15 +8,16 @@ api = tweepy.Client(
 
 default_end_time = '2024-04-18T00:00:00Z'
 def gather_tweets(end_time):
-    result = api.search_all_tweets(query='Spurs', max_results=500,
+    result = api.search_all_tweets(query='Spurs', max_results=100,
                                    tweet_fields=['public_metrics', 'author_id', 'created_at'],
                                    end_time=end_time,
                                    )
     return result
 
 
-tweets = gather_tweets()
+tweets = gather_tweets(default_end_time)
 filtered_tweets = []
+print(sys.getsizeof(tweets.data[0]))
 
 for tweet in tweets.data:
     if tweet["public_metrics"]["like_count"] > 5:
