@@ -228,8 +228,8 @@ def parse_stock_output(str_out):
     for i in res_low:
         low.append(re.search(r"\d+.\d{2}", str_out[i:]).group())
     if(len(open) != 3 or len(high) != 3 or len(low) != 3):
-        print("Could not calculate")
-    print([low, open, high])
+        return "Could not calculate"
+    return [low, open, high]
     # str_out = str_out[2:-2]
     # str_out = str_out.split("], [")
     # new_dict = {}
@@ -247,8 +247,3 @@ def parse_stock_output(str_out):
     #     new_dict[t[-1]] = temp_dict
     # print("parse_stock_output")
     # return json.dumps(new_dict)
-def main():
-    parse_stock_output("[[('open', '3.34'), ('high', '4.16'), ('low', '2.89'), ('close', '3.62'), '2024-01-11'], \
-[('open', '3.62'), ('high', '4.22'), ('low', '3.34'), ('close', '3.94'), '2024-01-12'], \
-[('open', '3.94'), ('high', '4.32'), ('low', '3.54'), ('close', '4.12'), '2024-01-13']]")
-main()
