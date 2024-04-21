@@ -972,6 +972,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "dotenv",
+ "rand",
  "serde_json",
  "tokio",
  "twitter-v2",
