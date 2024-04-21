@@ -1,9 +1,9 @@
 interface StockData {
-  "1. open": string;
-  "2. high": string;
-  "3. low": string;
-  "4. close": string;
-  "5. volume": string;
+  "open": string;
+  "high": string;
+  "low": string;
+  "close": string;
+  "volume": string;
 }
 
 type StockDataMap = {

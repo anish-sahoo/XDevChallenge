@@ -3,11 +3,11 @@ import LineChart from "./LineChart";
 
 interface StockData {
   [date: string]: {
-    "1. open": string;
-    "2. high": string;
-    "3. low": string;
-    "4. close": string;
-    "5. volume": string;
+    "open": string;
+    "high": string;
+    "low": string;
+    "close": string;
+    "volume": string;
   };
 }
 
@@ -19,9 +19,9 @@ const StockChart: React.FC<StockChartProps> = ({ stockData }) => {
   const data = Object.keys(stockData).map((date) => {
     return {
       date,
-      open: parseFloat(stockData[date]["1. open"]),
-      high: parseFloat(stockData[date]["2. high"]),
-      low: parseFloat(stockData[date]["3. low"]),
+      open: parseFloat(stockData[date]["open"]),
+      high: parseFloat(stockData[date]["high"]),
+      low: parseFloat(stockData[date]["low"]),
     };
   });
 

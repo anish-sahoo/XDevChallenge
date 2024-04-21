@@ -61,8 +61,10 @@ async def predict():
             print('Stock data:', stock_data)
             tweets_list = get_all_tweets(terms)
             print('Tweets:', tweets_list)
-            prediction = await gen_predictions(tweets_list, stock_data, stock_name)
-            print('Prediction:', prediction)
+            prediction = await gen_short(tweets_list, stock_data, stock_name)
+            print('Gen Short:', prediction)
+            prediction2 = await gen_long(tweets_list, stock_data, stock_name)
+            print('Gen Long:', prediction2)
             return prediction
         except Exception as e:
             print('Exception',e)
