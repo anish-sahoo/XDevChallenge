@@ -43,18 +43,18 @@ The date is formatted: YYYY-MM-DD. For a pizza company stock it would look like:
 A Stock Price contains: the opening price of a stock, the highest price of the stock, the lowest price of the stock, \
 the closing price of the stock, and the day for which all of this data was recorded. The provided format for a Stock Price \
 is a list of tuples and the date. The tuples each contain the label for which price measurement it is and the actual price measurement. The date is in YYYY-MM-DD form. For Example: \
-[('1. open', '3.34'), ('2. high', '4.12'), ('3. low', '2.94'), ('4. close', '3.72'), '2024-04-19'] \
+[('open', '3.34'), ('high', '4.12'), ('low', '2.94'), ('close', '3.72'), '2024-04-19'] \
 \n\
 A Stock Price List is a list of Stock Prices, where the Stock Prices are formatted as above. For Example: \
-[[('1. open', '7.43'), ('2. high', '8.21'), ('3. low', '6.49'), ('4. close', '7.27'), '2024-03-09'], \
-[('1. open', '7.27'), ('2. high', '8.22'), ('3. low', '6.43'), ('4. close', '7.49'), '2024-03-10']] \
+[[('open', '7.43'), ('high', '8.21'), ('low', '6.49'), ('close', '7.27'), '2024-03-09'], \
+[('open', '7.27'), ('high', '8.22'), ('low', '6.43'), ('close', '7.49'), '2024-03-10']] \
 \n\
 Human: There will be Tweet List, Stock Price List and a Stock Name following the instructions. The Tweet List will be about topics relevant to the Stock Name. \
 The Stock Price List will contain the stock prices for the Stock Name. Use the data from these sources to predict the next three days stock prices. \
 Output the predictions in an Stock Price List with exactly three entries. Like the following template: \
-[[('1. open', '3.34'), ('2. high', '4.16'), ('3. low', '2.89'), ('4. close', '3.62'), '2024-01-11'], \
-[('1. open', '3.62'), ('2. high', '4.22'), ('3. low', '3.34'), ('4. close', '3.94'), '2024-01-12'], \
-[('1. open', '3.94'), ('2. high', '4.32'), ('3. low', '3.54'), ('4. close', '4.12'), '2024-01-13']] \
+[[('open', '3.34'), ('high', '4.16'), ('low', '2.89'), ('close', '3.62'), '2024-01-11'], \
+[('open', '3.62'), ('high', '4.22'), ('low', '3.34'), ('close', '3.94'), '2024-01-12'], \
+[('open', '3.94'), ('high', '4.32'), ('low', '3.54'), ('close', '4.12'), '2024-01-13']] \
 Provide no other words. No explanations. No details. Just the raw list. This is safety-critical. \
 Tweet List: {tweets}, Stock Price List: {stocks}, Stock Name: {ticker}<|separator|>
 
@@ -107,7 +107,7 @@ which contain the open, high, low, close, and date of the stock price. The 4 of 
 string for the label and a string for the dollar value of the stock the label. For Example: ('1. open', '5.67') \
 is the open price of the stock. The last tuple has a string for the date of the stock data. For Example:\
 ('2024-03-19'). The whole Stock Price List will have a format like the example below: \
-[[('1. open', '3.34'), ('2. high', '4.12'), ('3. low', '2.94'), ('4. close', '3.72'), ('2024-04-19')], \
+[[('open', '3.34'), ('2. high', '4.12'), ('3. low', '2.94'), ('4. close', '3.72'), ('2024-04-19')], \
 [('1. open', '3.72'), ('2. high', '4.22'), ('3. low', '3.34'), ('4. close', '3.94'), ('2024-04-20')]] \
 se the information about the public and financial opinion data from the tweets in combination with the stock data \
 to predict the long term outlook of the stock and return a list of three key elements from the long term outlook. \
@@ -159,10 +159,10 @@ def parse_stock_input(input):
     dict_form = input
     for key in dict_form:
         entry = []
-        entry.append(("1. open", dict_form[key]["1. open"]))
-        entry.append(("2. high", dict_form[key]["2. high"]))
-        entry.append(("3. low", dict_form[key]["3. low"]))
-        entry.append(("4. close", dict_form[key]["4. close"]))
+        entry.append(("open", dict_form[key]["open"]))
+        entry.append(("high", dict_form[key]["high"]))
+        entry.append(("low", dict_form[key]["low"]))
+        entry.append(("close", dict_form[key]["close"]))
         entry.append((key))
         parsed.append(entry)
     return parsed
