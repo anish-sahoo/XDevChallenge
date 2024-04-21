@@ -65,11 +65,14 @@ async def predict():
             print('Gen Short>>>>>>>', prediction)
 #            prediction2 = await gen_long(tweets_list, stock_data, stock_name)
 #            print('Gen Long>>>>>>>', prediction2)
-            prediction3 = await gen_predictions(tweets_list, stock_data, stock_name)
-            print('Gen Predictions>>>>>>>', prediction3)
+#            prediction3 = await gen_predictions(tweets_list, stock_data, stock_name)
+#            print('Gen Predictions>>>>>>>', prediction3)
 #            prediction4 = await gen_old_predictions(tweets_list, stock_data, stock_name)
 #            print('Gen Old Predictions>>>>>>>', prediction4)
-            return prediction
+            answer = prediction
+#            if prediction3 is not None and len(prediction3) > 0:
+#                answer = answer + ['\nPrices for the next 3 days:'] + prediction3
+            return answer
         except Exception as e:
             print('Exception',e)
             return jsonify({'error': f'Error fetching prediction {e}'}), 500
