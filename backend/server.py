@@ -8,7 +8,7 @@ from stockdata import getStockData
 load_dotenv()
 
 app = Quart(__name__)
-app = cors(app, allow_origin=["http://localhost:5173", "http://0.0.0.0:5173", "http://127.0.0.1:5173"])
+app = cors(app, allow_origin=["http://localhost:5173", "http://0.0.0.0:5173", "http://127.0.0.1:5173", "https://finance.asahoo.dev", "https://api.asahoo.dev"])
 
 
 @app.route('/')
